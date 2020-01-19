@@ -2,83 +2,59 @@ from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
 
 class Slime():
-    def __init__(self,):
-        charPath = "models/"
-        self.model = loader.loadModel(charPath+"slime.egg")
+    def __init__(self,initialPos, slimeModelPath, floorPos):
+        #loading the model
+        self.model = loader.loadModel(slimeModelPath)
         self.model.reparentTo(render)
         
-        self.posx = 0
-        self.posy = 0
-        self.posz = 0
-
-        self.direction = LVecBase3f(0,0,0)
-        self.velocity = LVecBase3f(0,0,0)
-        self.acceleration = LVecBase3f(-0.1,-0.1,-0.1)
-
-        self.velocityincrementer = 0.1
-        self.state = 'ground'
+        #initialise vectorial stuff
+        self.pos = LVecBase3f(initialPos) 
+        self.speed = LVecBase3f(0,0,0) # initialize as static object
         
+        #init constants
+        self.jumpSpeed = LVecBase3f(0,0,8)
+        self.movingSpeed = 5
+        
+        # environment
+        self.groundHeight = floorPos
+        self.externalg = LVecBase3f(0,0,-9.81) # const
 
+        # state
+        self.is_flying = (self.pos[2] > self.groundHeight)
+
+        #user controls
         self.forward = KeyboardButton.asciiKey("z")
         self.backward = KeyboardButton.asciiKey('s')
         self.left = KeyboardButton.asciiKey('q')
         self.right = KeyboardButton.asciiKey('d')
+        self.keymaplist = [self.forward, self.backward, self.left, self.right]
 
-        base.accept('space', self.jump)
-        
-        taskMgr.add(self.moveTask,"MoveTask")
-        print('slime loaded')
+        base.accept('space', self.jump,[self.jumpSpeed])
     
-    def moveTask(self,task):
+    def update(self,dt):  # dt = time elapsed between the two updates
+        self.checkForMovement()
+        if (self.pos[2] > self.groundHeight or self.speed[2] >= 0):
+            self.pos += self.speed*dt
+            self.speed += self.externalg*dt
+        else:
+            self.pos[2] = self.groundHeight
+            self.speed = LVecBase3f(0,0,0)
+
+        self.is_flying = (self.pos[2] > self.groundHeight) # status updating
+        self.updatePos()
+
+    def checkForMovement(self):
         isDown = base.mouseWatcherNode.isButtonDown
-        if(isDown(self.forward)):
-            self.velocity.addY(self.velocityincrementer)
-            self.direction.setY(1)
+        for x in range(4):
+            if(isDown(self.keymaplist[x])):
+                if(x < 2): #backward or forward
+                    self.speed[1] = self.movingSpeed * (-1)**x
+                else:#left or right
+                    self.speed[0] = self.movingSpeed * -(-1)**x
 
-        if(isDown(self.backward)):
-            self.velocity.addY(self.velocityincrementer)
-            self.direction.setY(-1)
+    def jump(self, jspeed):
+        if not self.is_flying:
+            self.speed += jspeed
 
-        if(isDown(self.left)):
-            self.velocity.addX(self.velocityincrementer)
-            self.direction.setX(-1)
-
-        if(isDown(self.right)):
-            self.velocity.addX(self.velocityincrementer)
-            self.direction.setX(1)
-
-
-        self.posx += self.direction.getX()*self.velocity.getX()
-        self.posy += self.direction.getY()*self.velocity.getY()
-        self.posz += self.velocity.getZ()
-
-        
-
-        if(self.velocity.getX != 0):
-            self.velocity.addX(self.acceleration.getX())
-            self.updatePos()
-            if(self.velocity.getX() < 0):
-                self.velocity.setX(0)
-
-        if(self.velocity.getY != 0):
-            self.velocity.addY(self.acceleration.getY())
-            self.updatePos()
-            if(self.velocity.getY() < 0):
-                self.velocity.setY(0)
-
-        if(self.velocity.getZ != 0):
-            self.velocity.addZ(self.posz*self.acceleration.getZ())
-            self.updatePos()
-            if(self.velocity.getZ() < 0 and self.posz <= 0):
-                self.velocity.setZ(0)
-                self.posz = 0
-
-
-        return task.cont
-    
-    def jump(self):
-        self.velocity.addZ(1)
-
-        
     def updatePos(self):
-        self.model.setPos(self.posx,self.posy,self.posz)
+        self.model.setPos(self.pos)
