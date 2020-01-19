@@ -6,13 +6,16 @@ class Slime():
         charPath = "models/"
         self.model = loader.loadModel(charPath+"slime.egg")
         self.model.reparentTo(render)
+        
+        self.posx = 0
+        self.posy = 0
+        self.posz = 0
 
-        self.pos = LVecBase3f(0,0,0)
+        self.direction = LVecBase3f(0,0,0)
         self.velocity = LVecBase3f(0,0,0)
-        self.acceleration = LVecBase3f(0,0,-0.981)
+        self.acceleration = LVecBase3f(-0.1,-0.1,-0.1)
 
-        self.movingspeed = 0.1
-        self.jumpingspeed = 0.5
+        self.velocityincrementer = 0.1
         self.state = 'ground'
         
 
@@ -20,6 +23,7 @@ class Slime():
         self.backward = KeyboardButton.asciiKey('s')
         self.left = KeyboardButton.asciiKey('q')
         self.right = KeyboardButton.asciiKey('d')
+
         base.accept('space', self.jump)
         
         taskMgr.add(self.moveTask,"MoveTask")
@@ -28,41 +32,53 @@ class Slime():
     def moveTask(self,task):
         isDown = base.mouseWatcherNode.isButtonDown
         if(isDown(self.forward)):
-            self.posy+=self.movingspeed
-            self.updatePos()
+            self.velocity.addY(self.velocityincrementer)
+            self.direction.setY(1)
 
         if(isDown(self.backward)):
-            self.posy-=self.movingspeed
-            self.updatePos()
+            self.velocity.addY(self.velocityincrementer)
+            self.direction.setY(-1)
 
         if(isDown(self.left)):
-            self.posx-=self.movingspeed
-            self.updatePos()
+            self.velocity.addX(self.velocityincrementer)
+            self.direction.setX(-1)
 
         if(isDown(self.right)):
-            self.posx+=self.movingspeed
+            self.velocity.addX(self.velocityincrementer)
+            self.direction.setX(1)
+
+
+        self.posx += self.direction.getX()*self.velocity.getX()
+        self.posy += self.direction.getY()*self.velocity.getY()
+        self.posz += self.velocity.getZ()
+
+        
+
+        if(self.velocity.getX != 0):
+            self.velocity.addX(self.acceleration.getX())
             self.updatePos()
+            if(self.velocity.getX() < 0):
+                self.velocity.setX(0)
+
+        if(self.velocity.getY != 0):
+            self.velocity.addY(self.acceleration.getY())
+            self.updatePos()
+            if(self.velocity.getY() < 0):
+                self.velocity.setY(0)
+
+        if(self.velocity.getZ != 0):
+            self.velocity.addZ(self.posz*self.acceleration.getZ())
+            self.updatePos()
+            if(self.velocity.getZ() < 0 and self.posz <= 0):
+                self.velocity.setZ(0)
+                self.posz = 0
+
+
         return task.cont
     
     def jump(self):
-        if(self.state == 'ground'):
-            self.state = 'jumping'
-            taskMgr.add(self.jumpTask,'JumpTask')
+        self.velocity.addZ(1)
 
-    def jumpTask(self,task):
-        animationspeed = 10
-        if(task.frame == 2*animationspeed):
-            self.state = 'ground'
-            return task.done
-        if(task.frame == animationspeed):
-            self.state = 'falling'
-        
-        if(self.state == 'jumping'):
-            self.posz+=self.jumpingspeed
-        elif(self.state == 'falling'):
-            self.posz-=self.jumpingspeed
-        self.updatePos()
-        return task.cont
         
     def updatePos(self):
-        self.model.setPos(self.pos.x,self.posy,self.posz)
+        self.model.setPos(self.posx,self.posy,self.posz)

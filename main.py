@@ -6,8 +6,9 @@ from panda3d.core import *
 class MyApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
-
+        
         # Load the models.
+
         self.scene = self.loader.loadModel("models/plan")
         self.slime = Slime()
 
@@ -17,14 +18,19 @@ class MyApp(ShowBase):
         self.scene.reparentTo(self.render)
 
         # Apply scale and position transforms on the models.
-        self.scene.setScale(10, 10, 10)
-
+        
+        print('lol')
         #setting the lights
         directionalLight = DirectionalLight('directionalLight')
         directionalLightNP = render.attachNewNode(directionalLight)
         directionalLightNP.setHpr(45, -45, 0)
         directionalLight.setColor((2, 2, 2, 1))
         render.setLight(directionalLightNP)
+
+        self.scene.setScale(10, 10, 10)
+        
+        self.cam.setHpr(0,-10,0)
+        self.cam.setPos(0,-80,20)
 
 
 app = MyApp()
