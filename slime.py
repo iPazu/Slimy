@@ -1,5 +1,6 @@
 from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
+from math import log2
 
 class Slime():
     def __init__(self,initialPos, slimeModelPath, floorPos):
@@ -8,7 +9,8 @@ class Slime():
         self.model.reparentTo(render)
         
         #initialise vectorial stuff
-        self.pos = LVecBase3f(initialPos) 
+        self.pos = LVecBase3f(initialPos)
+        self.pos.set
         self.speed = LVecBase3f(0,0,0) # initialize as static object
         
         #init constants
@@ -34,6 +36,7 @@ class Slime():
     def update(self,dt):  # dt = time elapsed between the two updates
         self.checkForMovement()
         if (self.pos[2] > self.groundHeight or self.speed[2] >= 0):
+            self.updateJumpAnimation()
             self.pos += self.speed*dt
             self.speed += self.externalg*dt
         else:
@@ -56,5 +59,9 @@ class Slime():
         if not self.is_flying:
             self.speed += jspeed
 
+    def updateJumpAnimation(self):
+        self.model.setScale(LVecBase3f(2 - 0.5*log2(self.pos[2]- self.groundHeight +4),2 - 0.5*log2(self.pos[2]- self.groundHeight +4),0.5*log2(self.pos[2]- self.groundHeight +4)))
+
+    
     def updatePos(self):
         self.model.setPos(self.pos)
