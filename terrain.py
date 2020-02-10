@@ -54,17 +54,5 @@ class ProceduralImage():
         perlin.setScale(scale)
         self.perlinNoise.addLevel(perlin)
 
-    def applyMasks(self):
-        # This method is obsolete, I've moved this math into the shader.
-        for x in range(self.sizex):
-            for y in range(self.sizey):
-                distance_x = x - self.sizex * 0.5;
-                distance_y = y - self.sizey * 0.5;
-                distance = sqrt(distance_x**2 + distance_y**2);
-                max_width = sqrt(self.sizex**2+self.sizey**2) * 0.5 - 5.0;
-                delta = distance / max_width;
-                gradient = delta * delta;
-                self.image.setXel(x,y,self.image.getXel(x,y)-gradient**2)
-
     def getImage(self):
         return self.image
