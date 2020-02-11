@@ -15,17 +15,28 @@ class MyApp(ShowBase):
         self.dt = 0.05
         
         # Load the models.
-        self.slime = Slime((0,0,1),"models\slime.egg", 1)
+        MODELSDIR = '/assets/models/'
+        startingPoint = (0,0,1)
+        self.slime = Slime(startingPoint, str(MAINDIR)+MODELSDIR+"slime.egg", 1)
 
         #Load terrain
-        terrain = Terrain(500)
+        terrain = Terrain(1024)
 
         #setting the lights
         self.setLights()
-        
+        self.disableMouse()
         #positionate the camera
+        self.camera.lookAt(self.slime.model)
+        
+        self.ydelta = 100
+        self.zdelta = 20
+        self.accept("wheel_up", self.camzoom,[True])
+        self.accept("wheel_down", self.camzoom,[False])
+
 
         self.task_mgr.add(self.mainLoop, "MainTask")
+        self.task_mgr.add(self.updateCamera, "CameraTask")
+
 
 
     def setLights(self):
@@ -45,10 +56,17 @@ class MyApp(ShowBase):
     def mainLoop(self,task):
         self.slime.update(self.dt)
         return task.cont
-
+    def camzoom(self,decrease):
+        if(decrease):
+            self.ydelta-=5
+            self.zdelta-=1
+        else:
+            self.ydelta+=5
+            self.zdelta+=1
     def updateCamera(self,task):
-    
-        self.cam.setPos(self.slime.pos.getX(),self.slime.pos.getY()-30,self.slime.pos.getZ()+85)
+        self.cam.setPos(self.slime.pos.getX(),self.slime.pos.getY()-self.ydelta,self.slime.pos.getZ()+self.zdelta)
+        #print("x:"+str(self.camera.getX()-self.slime.pos.getX())+" y:"+str(self.camera.getY()-self.slime.pos.getY())+" z:"+str(self.camera.getZ()))
+        #print(self.cam.getHpr())
         self.cam.lookAt(self.slime.model)
         return task.cont
 

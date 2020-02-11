@@ -15,7 +15,7 @@ class Slime():
         
         #init constants
         self.jumpSpeed = LVecBase3f(0,0,8)
-        self.movingSpeed = 5
+        self.movingSpeed = 15
         
         # environment
         self.groundHeight = floorPos
