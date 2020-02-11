@@ -1,6 +1,8 @@
 from direct.showbase.ShowBase import ShowBase
 from direct.actor.Actor import Actor
 from slime import Slime
+from monster import Monster
+from creature import Creature
 from panda3d.core import *
 from terrain import Terrain
 
@@ -15,10 +17,10 @@ class MyApp(ShowBase):
         self.dt = 0.05
         
         # Load the models.
-        MODELSDIR = '/assets/models/'
+        MODELSDIR = '/models/'
         startingPoint = (0,0,1)
-        self.slime = Slime(startingPoint, str(MAINDIR)+MODELSDIR+"slime.egg", 1)
-
+        self.slime = Slime(startingPoint, str(MAINDIR)+MODELSDIR+"slime.egg", 1, 5, 5, 100, 0.02)
+        
         #Load terrain
         terrain = Terrain(1024)
 
@@ -69,8 +71,6 @@ class MyApp(ShowBase):
         #print(self.cam.getHpr())
         self.cam.lookAt(self.slime.model)
         return task.cont
-
-
 
 app = MyApp()
 app.run()

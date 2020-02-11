@@ -1,47 +1,38 @@
 from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
+from entity import Entity
 from math import log2
 
-class Slime():
-    def __init__(self,initialPos, slimeModelPath, floorPos):
-        #loading the model
-        self.model = loader.loadModel(slimeModelPath)
-        self.model.reparentTo(render)
-        
-        #initialise vectorial stuff
-        self.pos = LVecBase3f(initialPos)
-        self.pos.set
-        self.speed = LVecBase3f(0,0,0) # initialize as static object
-        
-        #init constants
-        self.jumpSpeed = LVecBase3f(0,0,8)
-        self.movingSpeed = 15
-        
-        # environment
-        self.groundHeight = floorPos
-        self.externalg = LVecBase3f(0,0,-9.81) # const
+class Slime(Entity):
+    def __init__(self,initialPos, slimeModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass):
+        #initialise parent stuff
+        Entity.__init__(self,initialPos, slimeModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass)
 
-        # state
-        self.is_flying = (self.pos[2] > self.groundHeight)
+        #init constants
+        self.jumpSpeed = LVecBase3f(0, 0, 8)
+        self.dashSpeed = 15
 
         #user controls
         self.forward = KeyboardButton.asciiKey("z")
         self.backward = KeyboardButton.asciiKey('s')
         self.left = KeyboardButton.asciiKey('q')
         self.right = KeyboardButton.asciiKey('d')
-        self.keymaplist = [self.forward, self.backward, self.left, self.right]
+        self.e = KeyboardButton.asciiKey('e')
+        self.keymaplist = [self.forward, self.backward, self.right, self.left]
+        self.t0 = -5
+        self.dashDelay = 5
 
         base.accept('space', self.jump,[self.jumpSpeed])
-    
-    def update(self,dt):  # dt = time elapsed between the two updates
+
+    def update(self, dt):  # dt = time elapsed between the two updates
         self.checkForMovement()
-        if (self.pos[2] > self.groundHeight or self.speed[2] >= 0):
-            self.updateJumpAnimation()
+        if (self.is_flying == True or self.speed[2] >= 0):
+            self.updateJumpAnimation()   
             self.pos += self.speed*dt
             self.speed += self.externalg*dt
         else:
             self.pos[2] = self.groundHeight
-            self.speed = LVecBase3f(0,0,0)
+            self.speed = LVecBase3f(0, 0, 0)
 
         self.is_flying = (self.pos[2] > self.groundHeight) # status updating
         self.updatePos()
@@ -50,18 +41,24 @@ class Slime():
         isDown = base.mouseWatcherNode.isButtonDown
         for x in range(4):
             if(isDown(self.keymaplist[x])):
+                movingIncrementer = self.movingSpeed
+                if(isDown(self.e)):
+                    if globalClock.getFrameTime() - self.t0 > self.dashDelay:
+                        movingIncrementer = self.dashSpeed
+                        self.t0 = globalClock.getFrameTime()
                 if(x < 2): #backward or forward
-                    self.speed[1] = self.movingSpeed * (-1)**x
-                else:#left or right
-                    self.speed[0] = self.movingSpeed * -(-1)**x
-
+                    self.speed[1] = movingIncrementer * (-1)**x
+                else: #left or right
+                    self.speed[0] = movingIncrementer * (-1)**x
+    
     def jump(self, jspeed):
         if not self.is_flying:
             self.speed += jspeed
-
+    
     def updateJumpAnimation(self):
         self.model.setScale(LVecBase3f(2 - 0.5*log2(self.pos[2]- self.groundHeight +4),2 - 0.5*log2(self.pos[2]- self.groundHeight +4),0.5*log2(self.pos[2]- self.groundHeight +4)))
 
     
     def updatePos(self):
-        self.model.setPos(self.pos)
+        self.model.setPos(self.pos)  
+
