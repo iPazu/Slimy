@@ -27,7 +27,7 @@ class Slime(Entity):
     def update(self, dt):  # dt = time elapsed between the two updates
         self.checkForMovement()
         if (self.is_flying == True or self.speed[2] >= 0):
-            self.updateJumpAnimation()   
+            #self.updateJumpAnimation()   
             self.pos += self.speed*dt
             self.speed += self.externalg*dt
         else:

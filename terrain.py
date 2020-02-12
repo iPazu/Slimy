@@ -8,10 +8,10 @@ from itertools import product
 class Terrain():
     def __init__(self,size):
         self.grassbushes = 0
-        self.treenumber = 0
+        self.treenumber = 500
         self.grass = {}
         self.trees = {}
-        self.biomes = {([0,0.4,0):'dark forest',[0, 0.6, 0.1]:'forest',[0, 0.8, 0.3]:'prairies',[0.5,1,0.2]:'lush lands',[0.9,1,0.5]:'beach',[0.9, 1, 0.7]:'desert'}
+        #self.biomes = {([0,0.4,0):'dark forest',[0, 0.6, 0.1]:'forest',[0, 0.8, 0.3]:'prairies',[0.5,1,0.2]:'lush lands',[0.9,1,0.5]:'beach',[0.9, 1, 0.7]:'desert'}
         self.size = size
         self.pimage = ProceduralImage(1024)
         # Set up the GeoMipTerrain
@@ -33,11 +33,12 @@ class Terrain():
 
     def addWorldTrees(self):
         for i in range(self.treenumber):
-            while(True):
-                x = random.randint(-self.size,self.size)
-                y = random.randint(-self.size,self.size)
+            x = random.randint(-self.size,self.size)
+            y = random.randint(-self.size,self.size)
+            """while(True):
+                
                 if(self.getPixelFromPos(x,y) > 0.15):
-                   break
+                   break"""
             model = loader.loadModel("assets/models/tree1")
             model.setScale(5,5,5)
             model.setPos(x,y,0.1)

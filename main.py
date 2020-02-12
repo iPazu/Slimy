@@ -5,6 +5,7 @@ from monster import Monster
 from creature import Creature
 from panda3d.core import *
 from terrain import Terrain
+from skybox import Skybox
 
 import os
 MAINDIR=Filename.fromOsSpecific(os.getcwd())
@@ -18,10 +19,13 @@ class MyApp(ShowBase):
         self.dt = 0.25
         
         # Load the models.
-        MODELSDIR = '/models/'
+        MODELSDIR = '/assets/models/'
         startingPoint = (0,0,1)
         self.slime = Slime(startingPoint, str(MAINDIR)+MODELSDIR+"slime.egg", 1, 5, 100, 0.02)
         
+        #Load Skybox
+        Skybox(self.render)
+
         #Load terrain
         self.terrain = Terrain(1024)
 
@@ -44,7 +48,7 @@ class MyApp(ShowBase):
 
     def setLights(self):
         sun = DirectionalLight("sun")
-        sun.setColor((1, 1, 1, 1))
+        sun.setColor((3, 3, 3, 1))
         sun.setScene(render)
         self.sunNp = render.attachNewNode(sun)
         self.sunNp.setPos(-10, -10, 30)
