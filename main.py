@@ -5,6 +5,8 @@ from monster import Monster
 from creature import Creature
 from panda3d.core import *
 from terrain import Terrain
+from direct.filter.CommonFilters import CommonFilters
+from skybox import Skybox
 
 import os
 MAINDIR = Filename.fromOsSpecific(os.getcwd())
@@ -21,6 +23,7 @@ class MyApp(ShowBase):
         startingPoint = (0,0,1)
         self.slime = Slime(startingPoint, str(MAINDIR)+MODELSDIR+"slime.egg", 1, 5, 5, 100, 0.02)
         
+        Skybox(self.render)
         #Load terrain
         terrain = Terrain(1024)
 
@@ -36,21 +39,20 @@ class MyApp(ShowBase):
         self.accept("wheel_up", self.camzoom,[True])
         self.accept("wheel_down", self.camzoom,[False])
 
-
         self.task_mgr.add(self.mainLoop, "MainTask")
         self.task_mgr.add(self.updateCamera, "CameraTask")
 
     def setLights(self):
         sun = DirectionalLight("sun")
-        sun.setColor((1, 1, 1, 1))
+        sun.setColor((3, 3, 3, 3))
         sun.setScene(render)
         self.sunNp = render.attachNewNode(sun)
-        self.sunNp.setPos(-10, -10, 30)
+        self.sunNp.setPos(-10, -10, 80)
         self.sunNp.lookAt(0,0,0)
         render.setLight(self.sunNp)
     
         alight = AmbientLight('alight')
-        alight.setColor((0.5, 0.5, 0.5, 1))
+        alight.setColor((0.3, 0.3, 0.3, 1))
         alnp = render.attachNewNode(alight)
         render.setLight(alnp)
 
