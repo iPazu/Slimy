@@ -7,17 +7,17 @@ from panda3d.core import *
 from terrain import Terrain
 
 import os
-MAINDIR=Filename.fromOsSpecific(os.getcwd())
+MAINDIR = Filename.fromOsSpecific(os.getcwd())
 class MyApp(ShowBase):
     def __init__(self):
         
         ShowBase.__init__(self)
 
         # the dt should depend on the framerate
-        self.dt = 0.05
+        self.dt = 0.25
         
         # Load the models.
-        MODELSDIR = '/models/'
+        MODELSDIR = '/assets/models/'
         startingPoint = (0,0,1)
         self.slime = Slime(startingPoint, str(MAINDIR)+MODELSDIR+"slime.egg", 1, 5, 5, 100, 0.02)
         
@@ -27,6 +27,7 @@ class MyApp(ShowBase):
         #setting the lights
         self.setLights()
         self.disableMouse()
+
         #positionate the camera
         self.camera.lookAt(self.slime.model)
         
@@ -38,8 +39,6 @@ class MyApp(ShowBase):
 
         self.task_mgr.add(self.mainLoop, "MainTask")
         self.task_mgr.add(self.updateCamera, "CameraTask")
-
-
 
     def setLights(self):
         sun = DirectionalLight("sun")
@@ -58,6 +57,7 @@ class MyApp(ShowBase):
     def mainLoop(self,task):
         self.slime.update(self.dt)
         return task.cont
+
     def camzoom(self,decrease):
         if(decrease):
             self.ydelta-=5
@@ -65,6 +65,7 @@ class MyApp(ShowBase):
         else:
             self.ydelta+=5
             self.zdelta+=1
+
     def updateCamera(self,task):
         self.cam.setPos(self.slime.pos.getX(),self.slime.pos.getY()-self.ydelta,self.slime.pos.getZ()+self.zdelta)
         #print("x:"+str(self.camera.getX()-self.slime.pos.getX())+" y:"+str(self.camera.getY()-self.slime.pos.getY())+" z:"+str(self.camera.getZ()))
