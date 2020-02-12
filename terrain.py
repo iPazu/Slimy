@@ -1,6 +1,8 @@
 from panda3d.core import *
 from math import *
 import random
+from itertools import product
+
 
 
 class Terrain():
@@ -9,7 +11,7 @@ class Terrain():
         self.treenumber = 0
         self.grass = {}
         self.trees = {}
-        #self.biomes = {(0,0.4,0):'dark forest',[0, 0.6, 0.1]:'forest',[0, 0.8, 0.3]:'prairies',[0.5,1,0.2]:'lush lands',[0.9,1,0.5]:'beach',[0.9, 1, 0.7]:'desert'}
+        self.biomes = {([0,0.4,0):'dark forest',[0, 0.6, 0.1]:'forest',[0, 0.8, 0.3]:'prairies',[0.5,1,0.2]:'lush lands',[0.9,1,0.5]:'beach',[0.9, 1, 0.7]:'desert'}
         self.size = size
         self.pimage = ProceduralImage(1024)
         # Set up the GeoMipTerrain
@@ -43,32 +45,25 @@ class Terrain():
             model.reparentTo(render)
 
     def addWorldGrass(self):
-        for i in range(50):
+        for i in range(self.grassbushes):
             self.addBushesOfGrass()
 
     def addBushesOfGrass(self):
+        radius = random.randint(1,3)
+        bushgap = 8
         initx = random.randint(-self.size,self.size)
         inity = random.randint(-self.size,self.size)
-        radius = 100.0
-        gap = 10
-        p= 1
-        delta = 0
-        x = initx
-        y= inity
-        while p > 0:
-            if(p > 0.5):
-                x+= (-1)**(round(p*100))*gap
-            else:
-                y+= (-1)**(round(p*100))*gap
-            distance = self.distance((initx,inity,0),(x,y,0))
-            self.addGrassModel(x,y)
-            delta = distance/round(random.uniform(1, radius),2)
-            p-= delta
-            p = float("{0:.2f}".format(p))
-    
+        locs = list(self.points_in_circle(radius))
+        for l in locs:
+            self.addGrassModel(initx+l[0]*bushgap,inity+l[1]*bushgap)
+        
+    def points_in_circle(self,radius):
+        for x, y in product(range(int(radius) + 1), repeat=2):
+            if x**2 + y**2 <= radius**2:
+                yield from set(((x, y), (x, -y), (-x, y), (-x, -y),))
     def addGrassModel(self,x,y):
         model = loader.loadModel("assets/models/grass")
-        greentex = loader.loadTexture('assets/texture/green.jpg')
+        greentex = loader.loadTexture('assets/texture/green.png')
         model.setTexture(greentex, 1)
         model.setScale(5,5,1.5)
         model.setPos(x,y,0.1)
