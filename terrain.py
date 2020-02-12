@@ -7,12 +7,13 @@ from itertools import product
 
 class Terrain():
     def __init__(self,size):
-        self.grassbushes = 40
-        self.treenumber = 50
+        self.grassbushes = 0
+        self.treenumber = 0
         self.grass = {}
         self.trees = {}
+        #self.biomes = {(0,0.4,0):'dark forest',[0, 0.6, 0.1]:'forest',[0, 0.8, 0.3]:'prairies',[0.5,1,0.2]:'lush lands',[0.9,1,0.5]:'beach',[0.9, 1, 0.7]:'desert'}
         self.size = size
-        self.procedural = ProceduralImage(1024)
+        self.pimage = ProceduralImage(1024)
         # Set up the GeoMipTerrain
         self.terrain = CardMaker("myTerrain")
         self.terrain.setFrame(-size,size,-size,size)
@@ -23,7 +24,7 @@ class Terrain():
 
         root.setHpr(0,-90,0)
         root.setShader(Shader.load(Shader.SL_GLSL, "assets/shaders/shader.vert", "assets/shaders/shader.frag"))
-        root.setShaderInput("texInput", loader.loadTexture("assets/texture/map.png"))
+        root.setShaderInput("texInput", loader.loadTexture("assets/texture/perlin.png"))
 
         # Generate it.
         self.terrain.generate()
@@ -32,8 +33,11 @@ class Terrain():
 
     def addWorldTrees(self):
         for i in range(self.treenumber):
-            x = random.randint(-self.size,self.size)
-            y = random.randint(-self.size,self.size)
+            while(True):
+                x = random.randint(-self.size,self.size)
+                y = random.randint(-self.size,self.size)
+                if(self.getPixelFromPos(x,y) > 0.15):
+                   break
             model = loader.loadModel("assets/models/tree1")
             model.setScale(5,5,5)
             model.setPos(x,y,0.1)
@@ -71,7 +75,23 @@ class Terrain():
         y = abs(ip[1]-cp[1])
         z = abs(ip[2]-cp[2])
         return sqrt(x**2+y**2+z**2)
+    
+    def getBiome(self,x,y):
+        xel = self.getPixelFromPos(x,y)
+        print(xel)
+        print(self.roundNumber(xel[0]))
+        print(self.roundNumber(xel[1]))
+        print(self.roundNumber(xel[2]))
 
+        return self.biomes[(self.roundNumber(xel[0]),self.roundNumber(xel[0]),self.roundNumber(xel[2]))]
+
+    def roundNumber(self,n):
+        return float("{0:.2f}".format(n))
+    def getPixelFromPos(self,x,y):
+        posx = int((x+self.size)/2)
+        posy = int((self.size-y)/2)
+        return self.pimage.getImage().getXel(posx,posy)
+        
 class ProceduralImage():
     def __init__(self,size):
         self.image = PNMImage(size,size)
@@ -86,15 +106,17 @@ class ProceduralImage():
         
 
         self.image.perlinNoiseFill(self.perlinNoise)
-        #self.applyMasks()
+        #save image
+        self.image.write("assets/texture/perlin.png")
+
+        self.applyMasks()
 
         # Smooth out minor imperfections
-        self.image.gaussianFilter(10.0)
+        #self.image.gaussianFilter(10.0)
 
         #save image
-        self.image.write("assets/texture/map.png")
         self.image.write("assets/texture/mapisland.png")
-        print("image generated")
+        print("image generated, size: "+str(size)+"x"+str(size))
 
     def addFrequency(self,scale):
         perlin = PerlinNoise2()
@@ -112,9 +134,24 @@ class ProceduralImage():
                     distance = sqrt(distance_x**2 + distance_y**2);
                     max_width = sqrt(self.sizex**2+self.sizey**2) * 0.5 - 5.0;
                     delta = distance / max_width;
-                    gradient = delta;
+                    gradient = delta*delta;
                     self.image.setXel(x,y,self.image.getXel(x,y)-gradient)
-
+                    value = self.image.getXel(x,y)
+                    if (value > 0.75):
+                        self.image.setXel(x,y,0,0.4,0)
+                    elif(value > 0.50):
+                        self.image.setXel(x,y,0, 0.6, 0.1)
+                    elif (value > 0.30):
+                        self.image.setXel(x,y,0, 0.8, 0.3)
+                    elif(value > 0.15): 
+                        self.image.setXel(x,y,0.5,1,0.2)
+                    elif (value > 0.05): 
+                        self.image.setXel(x,y,0.9,1,0.5)
+                    else:
+                        self.image.setXel(x,y,0.9, 1, 0.7)
+                
 
     def getImage(self):
         return self.image
+    def getPixel(self,x,y):
+        return self.image.getXel(x,y)

@@ -14,18 +14,19 @@ class MyApp(ShowBase):
     def __init__(self):
         
         ShowBase.__init__(self)
+        self.setFrameRateMeter(True)
 
         # the dt should depend on the framerate
-        self.dt = 0.05
+        self.dt = 0.25
         
         # Load the models.
         MODELSDIR = '/assets/models/'
         startingPoint = (0,0,1)
-        self.slime = Slime(startingPoint, str(MAINDIR)+MODELSDIR+"slime.egg", 1, 5, 5, 100, 0.02)
+        self.slime = Slime(startingPoint, str(MAINDIR)+MODELSDIR+"slime.egg", 1, 5, 100, 0.02)
         
         Skybox(self.render)
         #Load terrain
-        terrain = Terrain(1024)
+        self.terrain = Terrain(1024)
 
         #setting the lights
         self.setLights()
@@ -59,6 +60,10 @@ class MyApp(ShowBase):
 
     def mainLoop(self,task):
         self.slime.update(self.dt)
+        #self.terrain.getBiome(int(self.slime.getPos()[0]),int(self.slime.getPos()[1]))
+        for t in self.terrain.trees.keys():
+            if(self.terrain.distance(t,self.slime.getPos()) < 50):
+                self.terrain.trees[t].removeNode()
         return task.cont
     def camzoom(self,decrease):
         if(decrease):

@@ -18,12 +18,20 @@ void main() {
   value -= gradient;
 
   if (value > 0.75) {
+    p3d_FragColor = vec4(0,0.4,0, 1);
+  } else if (value > 0.50) {
     p3d_FragColor = vec4(0, 0.6, 0.1, 1);
-  } else if (value > 0.30) {
+  } 
+  else if (value > 0.30) {
     p3d_FragColor = vec4(0, 0.8, 0.3, 1);
-  } else if (value > 0.15) {
+  }
+  else if (value > 0.15) {
     p3d_FragColor = vec4(0.5,1,0.2 , 1);
-  } else {
+  }
+  else if (value > 0.05) {
+    p3d_FragColor = vec4(0.9,1,0.5 , 1);
+  }
+  else {
     p3d_FragColor = vec4(0.9, 1, 0.7, 1);
   }
 

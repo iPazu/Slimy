@@ -2,12 +2,12 @@ from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
 from entity import Entity
 from math import log2
-
+import time
 class Slime(Entity):
-    def __init__(self,initialPos, slimeModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass):
+    def __init__(self,initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass):
         #initialise parent stuff
-        Entity.__init__(self,initialPos, slimeModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass)
-
+        self.movingSpeed = 10
+        Entity.__init__(self,initialPos, slimeModelPath, floorPos, self.movingSpeed, scale, lifePoint, volumicMass)
         #init constants
         self.jumpSpeed = LVecBase3f(0, 0, 8)
         self.dashSpeed = 50
@@ -19,8 +19,8 @@ class Slime(Entity):
         self.right = KeyboardButton.asciiKey('d')
         self.e = KeyboardButton.asciiKey('e')
         self.keymaplist = [self.forward, self.backward, self.right, self.left]
-        self.t0 = -5
-        self.dashDelay = 5
+        self.t0 = 0
+        self.dashDelay = 0.005
 
         base.accept('space', self.jump,[self.jumpSpeed])
 
@@ -43,9 +43,9 @@ class Slime(Entity):
             if(isDown(self.keymaplist[x])):
                 movingIncrementer = self.movingSpeed
                 if(isDown(self.e)):
-                    if globalClock.getFrameTime() - self.t0 > self.dashDelay:
-                        movingIncrementer = self.dashSpeed
-                        self.t0 = globalClock.getFrameTime()
+                    if int(round(time.time() * 1000)) - self.t0 > self.dashDelay*1000:
+                        movingIncrementer = self.dashSpeed*8
+                        self.t0 = int(round(time.time() * 1000))
                 if(x < 2): #backward or forward
                     self.speed[1] = movingIncrementer * (-1)**x
                 else: #left or right
@@ -58,7 +58,6 @@ class Slime(Entity):
     def updateJumpAnimation(self):
         self.model.setScale(LVecBase3f(2 - 0.5*log2(self.pos[2]- self.groundHeight +4),2 - 0.5*log2(self.pos[2]- self.groundHeight +4),0.5*log2(self.pos[2]- self.groundHeight +4)))
 
-    
     def updatePos(self):
         self.model.setPos(self.pos)  
 

@@ -36,6 +36,7 @@ class Entity():
         def setScale(self,scale):
             self.model.setScale(scale)
             self.updateMass()
-        
+        def getPos(self):
+            return self.pos
         def setLifePoint(self,lifePoint):
             self.lifePoint = lifePoint
