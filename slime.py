@@ -10,7 +10,7 @@ class Slime(Entity):
         Entity.__init__(self,initialPos, slimeModelPath, floorPos, self.movingSpeed, scale, lifePoint, volumicMass)
         #init constants
         self.jumpSpeed = LVecBase3f(0, 0, 8)
-        self.dashSpeed = 50
+        self.dashSpeed = 15
 
         #user controls
         self.forward = KeyboardButton.asciiKey("z")
@@ -27,7 +27,7 @@ class Slime(Entity):
     def update(self, dt):  # dt = time elapsed between the two updates
         self.checkForMovement()
         if (self.is_flying == True or self.speed[2] >= 0):
-            #self.updateJumpAnimation()   
+            self.updateJumpAnimation()   
             self.pos += self.speed*dt
             self.speed += self.externalg*dt
         else:

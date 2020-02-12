@@ -1,8 +1,6 @@
 from panda3d.core import *
 from math import *
 import random
-from itertools import product
-
 
 
 class Terrain():
@@ -45,25 +43,32 @@ class Terrain():
             model.reparentTo(render)
 
     def addWorldGrass(self):
-        for i in range(self.grassbushes):
+        for i in range(50):
             self.addBushesOfGrass()
 
     def addBushesOfGrass(self):
-        radius = random.randint(1,3)
-        bushgap = 8
         initx = random.randint(-self.size,self.size)
         inity = random.randint(-self.size,self.size)
-        locs = list(self.points_in_circle(radius))
-        for l in locs:
-            self.addGrassModel(initx+l[0]*bushgap,inity+l[1]*bushgap)
-        
-    def points_in_circle(self,radius):
-        for x, y in product(range(int(radius) + 1), repeat=2):
-            if x**2 + y**2 <= radius**2:
-                yield from set(((x, y), (x, -y), (-x, y), (-x, -y),))
+        radius = 100.0
+        gap = 10
+        p= 1
+        delta = 0
+        x = initx
+        y= inity
+        while p > 0:
+            if(p > 0.5):
+                x+= (-1)**(round(p*100))*gap
+            else:
+                y+= (-1)**(round(p*100))*gap
+            distance = self.distance((initx,inity,0),(x,y,0))
+            self.addGrassModel(x,y)
+            delta = distance/round(random.uniform(1, radius),2)
+            p-= delta
+            p = float("{0:.2f}".format(p))
+    
     def addGrassModel(self,x,y):
         model = loader.loadModel("assets/models/grass")
-        greentex = loader.loadTexture('assets/texture/green.png')
+        greentex = loader.loadTexture('assets/texture/green.jpg')
         model.setTexture(greentex, 1)
         model.setScale(5,5,1.5)
         model.setPos(x,y,0.1)
