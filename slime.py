@@ -4,10 +4,10 @@ from entity import Entity
 from math import log2
 import time
 class Slime(Entity):
-    def __init__(self,initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass):
+    def __init__(self,terrain,initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass):
         #initialise parent stuff
         self.movingSpeed = 10
-        Entity.__init__(self,initialPos, slimeModelPath, floorPos, self.movingSpeed, scale, lifePoint, volumicMass)
+        Entity.__init__(self,initialPos,terrain, slimeModelPath, floorPos, self.movingSpeed, scale, lifePoint, volumicMass)
         #init constants
         self.jumpSpeed = LVecBase3f(0, 0, 8)
         self.dashSpeed = 15

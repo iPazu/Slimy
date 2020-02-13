@@ -32,7 +32,7 @@ void main() {
     p3d_FragColor = vec4(0.9,1,0.5 , 1);
   }
   else {
-    p3d_FragColor = vec4(0.9, 1, 0.7, 1);
+    p3d_FragColor = vec4(0.9, 1, 0.6, 1);
   }
 
   //p3d_FragColor = vec4(value, value, value, 1);

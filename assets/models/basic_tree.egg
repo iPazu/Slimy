@@ -1,24 +1,8 @@
 <CoordinateSystem> { Z-up } 
-<Material> Material.003 {
-  <Scalar> diffr { 0.640000 }
-  <Scalar> diffg { 0.640000 }
-  <Scalar> diffb { 0.640000 }
-  <Scalar> specr { 0.500000 }
-  <Scalar> specg { 0.500000 }
-  <Scalar> specb { 0.500000 }
-  <Scalar> shininess { 12.5 }
-  <Scalar> ambr { 1.000000 }
-  <Scalar> ambg { 1.000000 }
-  <Scalar> ambb { 1.000000 }
-  <Scalar> emitr { 0.000000 }
-  <Scalar> emitg { 0.000000 }
-  <Scalar> emitb { 0.000000 }
-}
-
-<Material> Material.002 {
-  <Scalar> diffr { 0.223115 }
-  <Scalar> diffg { 0.223115 }
-  <Scalar> diffb { 0.018523 }
+<Material> troc {
+  <Scalar> diffr { 0.046244 }
+  <Scalar> diffg { 0.031637 }
+  <Scalar> diffb { 0.010962 }
   <Scalar> specr { 0.500000 }
   <Scalar> specg { 0.500000 }
   <Scalar> specb { 0.500000 }
@@ -47,10 +31,26 @@
   <Scalar> emitb { 0.000000 }
 }
 
-<Material> troc {
-  <Scalar> diffr { 0.046244 }
-  <Scalar> diffg { 0.031637 }
-  <Scalar> diffb { 0.010962 }
+<Material> Material.003 {
+  <Scalar> diffr { 0.640000 }
+  <Scalar> diffg { 0.640000 }
+  <Scalar> diffb { 0.640000 }
+  <Scalar> specr { 0.500000 }
+  <Scalar> specg { 0.500000 }
+  <Scalar> specb { 0.500000 }
+  <Scalar> shininess { 12.5 }
+  <Scalar> ambr { 1.000000 }
+  <Scalar> ambg { 1.000000 }
+  <Scalar> ambb { 1.000000 }
+  <Scalar> emitr { 0.000000 }
+  <Scalar> emitg { 0.000000 }
+  <Scalar> emitb { 0.000000 }
+}
+
+<Material> Material.002 {
+  <Scalar> diffr { 0.223115 }
+  <Scalar> diffg { 0.223115 }
+  <Scalar> diffb { 0.018523 }
   <Scalar> specr { 0.500000 }
   <Scalar> specg { 0.500000 }
   <Scalar> specb { 0.500000 }
