@@ -6,6 +6,7 @@ from creature import Creature
 from panda3d.core import *
 from terrain import Terrain
 from skybox import Skybox
+from direct.filter.CommonFilters import CommonFilters
 
 import os
 MAINDIR=Filename.fromOsSpecific(os.getcwd())
@@ -21,14 +22,16 @@ class MyApp(ShowBase):
         # Load the models.
         MODELSDIR = '/assets/models/'
         startingPoint = (0,0,1)
-        self.slime = Slime(startingPoint, str(MAINDIR)+MODELSDIR+"slime.egg", 1, 5, 100, 0.02)
         
         #Load Skybox
         Skybox(self.render)
 
         #Load terrain
         self.terrain = Terrain(1024)
-
+        self.slime = Slime(startingPoint,self.terrain, str(MAINDIR)+MODELSDIR+"slime.egg", 1, 5, 100, 0.02)
+        
+        #Load shaders
+        
         #setting the lights
         self.setLights()
         self.disableMouse()
@@ -44,11 +47,9 @@ class MyApp(ShowBase):
         self.task_mgr.add(self.mainLoop, "MainTask")
         self.task_mgr.add(self.updateCamera, "CameraTask")
 
-
-
     def setLights(self):
         sun = DirectionalLight("sun")
-        sun.setColor((3, 3, 3, 1))
+        sun.setColor((1, 1, 0.9, 1))
         sun.setScene(render)
         self.sunNp = render.attachNewNode(sun)
         self.sunNp.setPos(-10, -10, 30)
@@ -62,7 +63,6 @@ class MyApp(ShowBase):
 
     def mainLoop(self,task):
         self.slime.update(self.dt)
-        #self.terrain.getBiome(int(self.slime.getPos()[0]),int(self.slime.getPos()[1]))
         for t in self.terrain.trees.keys():
             if(self.terrain.distance(t,self.slime.getPos()) < 50):
                 self.terrain.trees[t].removeNode()
@@ -83,3 +83,6 @@ class MyApp(ShowBase):
 
 app = MyApp()
 app.run()
+
+def getMyApp():
+    return app
