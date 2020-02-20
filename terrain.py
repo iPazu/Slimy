@@ -1,12 +1,11 @@
 from panda3d.core import *
-from math import *
+from math import sqrt
 import random
 from itertools import product
-
-
+from panda3d.ai import *
 
 class Terrain():
-    def __init__(self,size):
+    def __init__(self,size, AIworld):
         self.grassbushes = 0
         self.treenumber = 500
         self.grass = {}
@@ -20,6 +19,7 @@ class Terrain():
             (0.9, 1, 0.7):Biome('desert',False,0,[""])}
         self.size = size
         self.pimage = ProceduralImage(1024)
+
         # Set up the GeoMipTerrain
         self.terrain = CardMaker("myTerrain")
         self.terrain.setFrame(-size,size,-size,size)
@@ -27,7 +27,7 @@ class Terrain():
         # Store the root NodePath for convenience
         root = NodePath(self.terrain.generate())
         root.reparentTo(render)
-
+        #AIworld.addObstacle(root)
         root.setHpr(0,-90,0)
         root.setShader(Shader.load(Shader.SL_GLSL, "assets/shaders/shader.vert", "assets/shaders/shader.frag"))
         root.setShaderInput("texInput", loader.loadTexture("assets/texture/perlin.png"))
@@ -35,9 +35,9 @@ class Terrain():
         # Generate it.
         self.terrain.generate()
         self.addWorldGrass()
-        self.addWorldTrees()
+        self.addWorldTrees(AIworld)
 
-    def addWorldTrees(self):
+    def addWorldTrees(self, AIworld):
         for i in range(self.treenumber):
             biome = ""
             while(True):
@@ -55,6 +55,7 @@ class Terrain():
             model.setPos(x,y,0.1)
             self.trees[(x,y,0)] = model
             model.reparentTo(render)
+            AIworld.addObstacle(model)
 
     def addWorldGrass(self):
         for i in range(self.grassbushes):
@@ -73,6 +74,7 @@ class Terrain():
         for x, y in product(range(int(radius) + 1), repeat=2):
             if x**2 + y**2 <= radius**2:
                 yield from set(((x, y), (x, -y), (-x, y), (-x, -y),))
+                
     def addGrassModel(self,x,y):
         model = loader.loadModel("assets/models/grass")
         greentex = loader.loadTexture('assets/texture/green.png')
@@ -135,8 +137,6 @@ class ProceduralImage():
         perlin.setScale(scale)
         self.perlinNoise.addLevel(perlin)
 
-    
-
     def applyMasks(self):
             # This method is obsolete, Used just for the map preview
             for x in range(self.sizex):
@@ -165,22 +165,27 @@ class ProceduralImage():
 
     def getImage(self):
         return self.image
+
     def getPixel(self,x,y):
         return self.image.getXel(x,y)
+
 class Biome():
     def __init__(self,name, havetrees,treesrate,treesmodelspaths):
         self.name = name
         self.haveTrees = havetrees
         self.treesrate = treesrate
         self.treesmodelpaths = treesmodelspaths
+
     def hasTrees(self):
         return self.haveTrees
 
     def getName(self):
         return self.name
+
     #Between 1 and 100
     def getTreeRate(self):
         return self.treesrate
+
     def getTreeModelPath(self):
         r = random.randint(0,len(self.treesmodelpaths)-1)
         return self.treesmodelpaths[r]

@@ -2,39 +2,46 @@ from direct.showbase.ShowBase import ShowBase
 from direct.actor.Actor import Actor
 from slime import Slime
 from monster import Monster
-from creature import Creature
 from panda3d.core import *
 from terrain import Terrain
 from skybox import Skybox
 from direct.filter.CommonFilters import CommonFilters
 
+from panda3d.ai import *
+
 import os
-MAINDIR=Filename.fromOsSpecific(os.getcwd())
+MAINDIR = str(Filename.fromOsSpecific(os.getcwd()))
+
 class MyApp(ShowBase):
     def __init__(self):
-        
+
         ShowBase.__init__(self)
         self.setFrameRateMeter(True)
 
         # the dt should depend on the framerate
         self.dt = 0.25
         
-        # Load the models.
-        MODELSDIR = '/assets/models/'
-        startingPoint = (0,0,1)
-        
-        #Load Skybox
+        # Load Skybox
         Skybox(self.render)
 
-        #Load terrain
-        self.terrain = Terrain(1024)
-        self.slime = Slime(startingPoint,self.terrain, str(MAINDIR)+MODELSDIR+"slime.egg", 1, 5, 100, 0.02)
+        # AI
+        self.setAI()
+
+        # Load terrain
+        self.terrain = Terrain(1024, self.AIworld)
         
-        #Load shaders
+        # Load shaders
+
+        # Monster list
+        self.monsterList = []
+
+        # Load the models.
+        self.loadModels()
         
         #setting the lights
         self.setLights()
         self.disableMouse()
+
         #positionate the camera
         self.camera.lookAt(self.slime.model)
         
@@ -46,6 +53,19 @@ class MyApp(ShowBase):
 
         self.task_mgr.add(self.mainLoop, "MainTask")
         self.task_mgr.add(self.updateCamera, "CameraTask")
+    
+    def setAI(self):
+        #Create AI world
+        self.AIworld = AIWorld(render)
+
+    def loadModels(self):
+        MODELSDIR = '/assets/models/'
+        startingPoint = (0,0,1)
+        #terrain, initialPos, slimeModelPath, scale, lifePoint, volumicMass, movingSpeed
+        self.slime = Slime(self.terrain, startingPoint, MAINDIR+MODELSDIR+"slime.egg", 5, 1, 0.02, 10)
+        #terrain, initialPos, ModelPath, movingSpeed, scale, lifePoint, volumicMass, target, AIworld
+        for i in range(10):
+            self.monsterList.append(Monster(self.terrain, (i*10,i*10,1), MAINDIR+MODELSDIR+"slime.egg", 100, 2, 0.02, 100, self.slime, self.AIworld, 100))
 
     def setLights(self):
         sun = DirectionalLight("sun")
@@ -63,10 +83,11 @@ class MyApp(ShowBase):
 
     def mainLoop(self,task):
         self.slime.update(self.dt)
-        for t in self.terrain.trees.keys():
-            if(self.terrain.distance(t,self.slime.getPos()) < 50):
-                self.terrain.trees[t].removeNode()
+        for i in self.monsterList:
+            i.update()
+        self.AIworld.update()
         return task.cont
+
     def camzoom(self,decrease):
         if(decrease):
             self.ydelta-=5
@@ -74,6 +95,7 @@ class MyApp(ShowBase):
         else:
             self.ydelta+=5
             self.zdelta+=1
+
     def updateCamera(self,task):
         self.cam.setPos(self.slime.pos.getX(),self.slime.pos.getY()-self.ydelta,self.slime.pos.getZ()+self.zdelta)
         #print("x:"+str(self.camera.getX()-self.slime.pos.getX())+" y:"+str(self.camera.getY()-self.slime.pos.getY())+" z:"+str(self.camera.getZ()))

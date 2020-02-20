@@ -2,7 +2,7 @@ from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
 
 class Entity():
-        def __init__(self,terrain,initialPos, ModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass):
+        def __init__(self, terrain, initialPos, ModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass):
 
             #loading the model
             self.model = loader.loadModel(ModelPath)
@@ -10,7 +10,7 @@ class Entity():
 
             #initialise vectorial stuff
             self.pos = LVecBase3f(initialPos)
-            self.speed = LVecBase3f(0,0,0) # initialize as static object
+            self.speed = LVecBase3f(0, 0, 0) # initialize as static object
         
             #init constants
             self.movingSpeed = movingSpeed
@@ -24,6 +24,9 @@ class Entity():
             self.groundHeight = floorPos
             self.externalg = LVecBase3f(0,0,-9.81*self.mass) # const
 
+            # init
+            self.setScale(scale)
+
             # state
             self.is_flying = (self.pos[2] > self.groundHeight)
 
@@ -36,7 +39,10 @@ class Entity():
         def setScale(self,scale):
             self.model.setScale(scale)
             self.updateMass()
+
         def getPos(self):
             return self.pos
+
         def setLifePoint(self,lifePoint):
             self.lifePoint = lifePoint
+
