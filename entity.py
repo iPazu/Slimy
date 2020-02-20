@@ -19,13 +19,14 @@ class Entity():
             self.volumicMass = volumicMass
             self.mass = scale * volumicMass
             self.terrain = terrain
+            self.live = True
         
             # environment
             self.groundHeight = floorPos
             self.externalg = LVecBase3f(0,0,-9.81*self.mass) # const
 
             # init
-            self.setScale(scale)
+            self.setScale(self.scale)
 
             # state
             self.is_flying = (self.pos[2] > self.groundHeight)
@@ -36,13 +37,11 @@ class Entity():
         def updateMass(self):
             self.mass = self.scale * self.volumicMass
 
-        def setScale(self,scale):
-            self.model.setScale(scale)
+        def setScale(self, scale):
+            self.scale = scale
+            self.model.setScale(self.scale)
             self.updateMass()
 
         def getPos(self):
             return self.pos
-
-        def setLifePoint(self,lifePoint):
-            self.lifePoint = lifePoint
 

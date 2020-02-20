@@ -5,7 +5,7 @@ from itertools import product
 from panda3d.ai import *
 
 class Terrain():
-    def __init__(self,size, AIworld):
+    def __init__(self,size):
         self.grassbushes = 0
         self.treenumber = 500
         self.grass = {}
@@ -27,7 +27,6 @@ class Terrain():
         # Store the root NodePath for convenience
         root = NodePath(self.terrain.generate())
         root.reparentTo(render)
-        #AIworld.addObstacle(root)
         root.setHpr(0,-90,0)
         root.setShader(Shader.load(Shader.SL_GLSL, "assets/shaders/shader.vert", "assets/shaders/shader.frag"))
         root.setShaderInput("texInput", loader.loadTexture("assets/texture/perlin.png"))
@@ -35,9 +34,9 @@ class Terrain():
         # Generate it.
         self.terrain.generate()
         self.addWorldGrass()
-        self.addWorldTrees(AIworld)
+        self.addWorldTrees()
 
-    def addWorldTrees(self, AIworld):
+    def addWorldTrees(self):
         for i in range(self.treenumber):
             biome = ""
             while(True):
@@ -55,7 +54,6 @@ class Terrain():
             model.setPos(x,y,0.1)
             self.trees[(x,y,0)] = model
             model.reparentTo(render)
-            AIworld.addObstacle(model)
 
     def addWorldGrass(self):
         for i in range(self.grassbushes):

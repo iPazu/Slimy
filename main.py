@@ -1,7 +1,7 @@
 from direct.showbase.ShowBase import ShowBase
 from direct.actor.Actor import Actor
 from slime import Slime
-from monster import Monster
+from monster import Monster, distance
 from panda3d.core import *
 from terrain import Terrain
 from skybox import Skybox
@@ -11,6 +11,18 @@ from panda3d.ai import *
 
 import os
 MAINDIR = str(Filename.fromOsSpecific(os.getcwd()))
+
+class Start():
+    def __init__(self):
+        self.menu = 1
+        self.begin()
+
+    def begin(self):
+        app = MyApp()
+        app.run()
+
+    def end(self):
+        a = 1
 
 class MyApp(ShowBase):
     def __init__(self):
@@ -28,14 +40,12 @@ class MyApp(ShowBase):
         self.setAI()
 
         # Load terrain
-        self.terrain = Terrain(1024, self.AIworld)
+        self.terrain = Terrain(1024)
         
         # Load shaders
 
-        # Monster list
-        self.monsterList = []
-
         # Load the models.
+        self.monsterList = []
         self.loadModels()
         
         #setting the lights
@@ -60,12 +70,13 @@ class MyApp(ShowBase):
 
     def loadModels(self):
         MODELSDIR = '/assets/models/'
-        startingPoint = (0,0,1)
+        startingPoint = (100, 0, 3)
         #terrain, initialPos, slimeModelPath, scale, lifePoint, volumicMass, movingSpeed
-        self.slime = Slime(self.terrain, startingPoint, MAINDIR+MODELSDIR+"slime.egg", 5, 1, 0.02, 10)
-        #terrain, initialPos, ModelPath, movingSpeed, scale, lifePoint, volumicMass, target, AIworld
+        self.slime = Slime(self.terrain, startingPoint, MAINDIR+MODELSDIR+"slime.egg", 2, 100, 0.03, 10) 
+        
         for i in range(10):
-            self.monsterList.append(Monster(self.terrain, (i*10,i*10,1), MAINDIR+MODELSDIR+"slime.egg", 100, 2, 0.02, 100, self.slime, self.AIworld, 100))
+            #terrain, initialPos, ModelPath, movingSpeed, scale, lifePoint, volumicMass, target, AIworld, detectionDistance, name
+            self.monsterList.append(Monster(self.terrain, (i*10,i*10,1), MAINDIR+MODELSDIR+"slime.egg", 100, i+1, 100, 100, self.slime, self.AIworld, 300, str(i)))
 
     def setLights(self):
         sun = DirectionalLight("sun")
@@ -81,11 +92,19 @@ class MyApp(ShowBase):
         alnp = render.attachNewNode(alight)
         render.setLight(alnp)
 
+    def gameOver(self):
+        start().end
+
     def mainLoop(self,task):
-        self.slime.update(self.dt)
-        for i in self.monsterList:
-            i.update()
-        self.AIworld.update()
+        if self.slime.live == True:
+            self.slime.update(self.dt)
+            for i in self.monsterList:
+                i.update()
+                if distance(self.slime.pos, i.pos) < self.slime.scale:
+                    i.dommage(1000, self.AIworld)
+            self.AIworld.update()
+        else :
+            self.gameOver()
         return task.cont
 
     def camzoom(self,decrease):
@@ -103,8 +122,5 @@ class MyApp(ShowBase):
         self.cam.lookAt(self.slime.model)
         return task.cont
 
-app = MyApp()
-app.run()
-
-def getMyApp():
-    return app
+start = Start()
+start.begin()
