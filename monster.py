@@ -1,11 +1,8 @@
 from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
-from math import sqrt
 from entity import Entity
 from panda3d.ai import *
-
-def distance(A, B):
-    return sqrt( (A[0]-B[0])**2 + (A[1]-B[1])**2 + (A[2]-B[2])**2 )
+from collision import distance
 
 class Monster(Entity):
 
@@ -47,19 +44,22 @@ class Monster(Entity):
                 self.AIbehaviors.pauseAi("pursue")
                 self.AIbehaviors.resumeAi("wander")
 
-    def remove(self):
+    def remove(self, collision):
         Monster.monsters.remove(self)
+        collision.entities.remove(self)
+        self.model.removeNode()
+        self.aiWorld.removeAiChar(self.name)
 
-    def dommage(self, dommagePoint, AIworld):
+    def dommage(self, dommagePoint, collision):
         self.lifePoint -= dommagePoint
         if self.lifePoint <= 0:
             self.target.setScale(self.target.scale + self.scale)
-            self.model.removeNode()
-            AIworld.removeAiChar(self.name)
-            self.remove()
+            self.remove(collision)
             
     def update(self):
         self.pos = self.model.getPos()
         self.detection()
         self.model.setPos((self.pos[0], self.pos[1], self.scale))
+        self.model.setHpr((0, 0, 0))
+        
 

@@ -1,5 +1,6 @@
 from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
+from collision import distance
 
 class Entity():
     def __init__(self, terrain, initialPos, ModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass):
@@ -15,7 +16,6 @@ class Entity():
         self.volumicMass = volumicMass
         self.mass = scale * volumicMass
         self.terrain = terrain
-        self.live = True
         
         # environment
         self.groundHeight = floorPos
@@ -49,3 +49,12 @@ class Entity():
     def getPos(self):
         return self.pos
 
+    def getHpr(self):
+        return self.model.getHpr()
+
+
+    """
+    #if you want to test if an entithy is properly remove
+    def __del__(self):
+        print("Instance of Custom Class Alpha Removed")
+    """

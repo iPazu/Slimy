@@ -1,7 +1,8 @@
 from direct.showbase.ShowBase import ShowBase
 from direct.actor.Actor import Actor
 from slime import Slime
-from monster import Monster, distance
+from monster import Monster
+from collision import Collision, distance
 from panda3d.core import *
 from terrain import Terrain
 from skybox import Skybox
@@ -43,10 +44,13 @@ class MyApp(ShowBase):
 
         # Load the models.
         self.loadEntities()
+        self.collision = Collision([self.slime]+Monster.monsters)
         
         #setting the lights
         self.setLights()
         self.disableMouse()
+
+        self.a = 0
 
         #positionate the camera
         self.camera.lookAt(self.slime.model)
@@ -91,15 +95,11 @@ class MyApp(ShowBase):
         start().end
 
     def mainLoop(self,task):
-        if self.slime.live == True:
-            self.slime.update(self.dt)
-            for m in Monster.monsters:
-                m.update()
-                if distance(self.slime.pos, m.pos) < self.slime.scale and m.scale < self.slime.scale:
-                    m.dommage(1000, self.AIworld)
-            self.AIworld.update()
-        else :
-            self.gameOver()
+        self.AIworld.update()
+        self.slime.update(self.dt)
+        for m in Monster.monsters:
+            m.update()
+        self.collision.update()
         return task.cont
 
     def camzoom(self,decrease):
