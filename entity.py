@@ -31,7 +31,7 @@ class Entity():
         self.pos = LVecBase3f(initialPos)
 
     def remove(self):
-        print()
+        self.removeNode()
         
 
     def updatePos(self):
