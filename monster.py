@@ -8,22 +8,30 @@ def distance(A, B):
     return sqrt( (A[0]-B[0])**2 + (A[1]-B[1])**2 + (A[2]-B[2])**2 )
 
 class Monster(Entity):
-    def __init__(self, terrain, initialPos, ModelPath, movingSpeed, scale, lifePoint, volumicMass, target, AIworld, detectionDistance, name):
+
+    monsters = []
+
+    def __init__(self, terrain, initialPos, modelPath, movingSpeed, scale, lifePoint, volumicMass, target, aiWorld, detectionDistance, name):
 
         #initialise parent stuff
-        Entity.__init__(self, terrain, initialPos , ModelPath, 2*scale, movingSpeed, scale, lifePoint, volumicMass)
+        Entity.__init__(self, terrain, initialPos , modelPath, 2*scale, movingSpeed, scale, lifePoint, volumicMass)
+        self.name = name
         self.updatePos()
         self.detectionDistance = detectionDistance
         self.target = target
         self.status = False
-        self.name = name
-
+        self.aiWorld = aiWorld
+        self.setUpAI()
+        Monster.monsters.append(self)
+    
+    def setUpAI(self):
         #initialise AI stuff
         self.AIchar = AICharacter(self.name, self.model, self.mass, self.movingSpeed, self.movingSpeed)
-        AIworld.addAiChar(self.AIchar)
+        self.aiWorld.addAiChar(self.AIchar)
         self.AIbehaviors = self.AIchar.getAiBehaviors()
         self.AIbehaviors.pursue(self.target.model, 1)
         self.AIbehaviors.wander(50, 0, 50, 1)
+        #self.model.loop("run")
         self.AIbehaviors.pauseAi("pursue")
 
     def detection(self):
@@ -39,13 +47,16 @@ class Monster(Entity):
                 self.AIbehaviors.pauseAi("pursue")
                 self.AIbehaviors.resumeAi("wander")
 
+    def remove(self):
+        Monster.monsters.remove(self)
+
     def dommage(self, dommagePoint, AIworld):
         self.lifePoint -= dommagePoint
         if self.lifePoint <= 0:
             self.target.setScale(self.target.scale + self.scale)
             self.model.removeNode()
             AIworld.removeAiChar(self.name)
-            #monsterList.remove()
+            self.remove()
             
     def update(self):
         self.pos = self.model.getPos()
