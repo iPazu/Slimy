@@ -1,17 +1,12 @@
 from direct.showbase.ShowBase import ShowBase
 from direct.actor.Actor import Actor
-from slime import Slime
-from monster import Monster
 from panda3d.core import *
 from terrain import Terrain
 from skybox import Skybox
 from direct.filter.CommonFilters import CommonFilters
-
+from monster import Monster
+from slime import Slime
 from panda3d.ai import *
-
-import os
-MAINDIR = str(Filename.fromOsSpecific(os.getcwd()))
-
 class MyApp(ShowBase):
     def __init__(self):
 
@@ -36,7 +31,7 @@ class MyApp(ShowBase):
         self.monsterList = []
 
         # Load the models.
-        self.loadModels()
+        self.loadEntities()
         
         #setting the lights
         self.setLights()
@@ -58,14 +53,17 @@ class MyApp(ShowBase):
         #Create AI world
         self.AIworld = AIWorld(render)
 
-    def loadModels(self):
-        MODELSDIR = '/assets/models/'
-        startingPoint = (0,0,1)
+    def loadEntities(self):
         #terrain, initialPos, slimeModelPath, scale, lifePoint, volumicMass, movingSpeed
-        self.slime = Slime(self.terrain, startingPoint, MAINDIR+MODELSDIR+"slime.egg", 5, 1, 0.02, 10)
+        self.slime = Slime(self.terrain, (0,0,1), "assets/models/slime.egg", 5, 1, 0.02, 10)
         #terrain, initialPos, ModelPath, movingSpeed, scale, lifePoint, volumicMass, target, AIworld
         for i in range(10):
-            self.monsterList.append(Monster(self.terrain, (i*10,i*10,1), MAINDIR+MODELSDIR+"slime.egg", 100, 2, 0.02, 100, self.slime, self.AIworld, 100))
+            Monster(self.terrain, (i*10,i*10,1), "assets/models/slime.egg", 100, 2, 0.02, 100, self.slime, self.AIworld, 100)
+        
+        #If you want to loop through the monsters list you can do that (don't forget to import monster class)
+        for m in Monster.monsters:
+            print(m)
+
 
     def setLights(self):
         sun = DirectionalLight("sun")
