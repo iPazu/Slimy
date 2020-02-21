@@ -42,14 +42,13 @@ class Monster(Entity):
     def dommage(self, dommagePoint, AIworld):
         self.lifePoint -= dommagePoint
         if self.lifePoint <= 0:
-            self.live = False
             self.target.setScale(self.target.scale + self.scale)
             self.model.removeNode()
             AIworld.removeAiChar(self.name)
+            #monsterList.remove()
             
     def update(self):
-        if self.live == True:
-            self.pos = self.model.getPos()
-            self.detection()
-            self.model.setPos((self.pos[0], self.pos[1], self.scale))
+        self.pos = self.model.getPos()
+        self.detection()
+        self.model.setPos((self.pos[0], self.pos[1], self.scale))
 
