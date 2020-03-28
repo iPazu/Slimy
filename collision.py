@@ -8,14 +8,12 @@ class Collision():
 
     def __init__(self,entities):
         self.entities = entities
+        self.isCollided = []
 
     def collisionDetection(self):
-        self.isCollided = [[(distance(self.entities[a].pos, self.entities[b].pos) <= max(self.entities[a].scale, self.entities[b].scale), self.entities[b], self.entities[a]) for b in range(a)] for a in range(len(self.entities))]
-        # Conversion du tableau en liste
-        isCollidedCopy = []
-        for i in range (len(self.isCollided)):
-            isCollidedCopy += self.isCollided[i]
-        self.isCollided = isCollidedCopy
+        for a in range(len(self.entities)):
+            for b in range(a):
+                self.isCollided.append((distance(self.entities[a].pos, self.entities[b].pos) <= max(self.entities[a].scale, self.entities[b].scale), self.entities[a], self.entities[b]))
 
     def consequences(self):
         for i in range(len(self.isCollided)):

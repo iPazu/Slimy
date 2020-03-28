@@ -9,18 +9,6 @@ from skybox import Skybox
 from direct.filter.CommonFilters import CommonFilters
 from panda3d.ai import *
 
-class Start():
-    def __init__(self):
-        self.menu = 1
-        self.begin()
-
-    def begin(self):
-        app = MyApp()
-        app.run()
-
-    def end(self):
-        a = 1
-
 class MyApp(ShowBase):
     def __init__(self):
 
@@ -35,7 +23,7 @@ class MyApp(ShowBase):
         Skybox(self.render)
         
         # AI
-        self.setAI()
+        self.AIworld = AIWorld(render)
 
         # Load terrain
         self.terrain = Terrain(1024)
@@ -50,8 +38,6 @@ class MyApp(ShowBase):
         self.setLights()
         self.disableMouse()
 
-        self.a = 0
-
         #positionate the camera
         self.camera.lookAt(self.slime.model)
         
@@ -63,10 +49,6 @@ class MyApp(ShowBase):
 
         self.task_mgr.add(self.mainLoop, "MainTask")
         self.task_mgr.add(self.updateCamera, "CameraTask")
-    
-    def setAI(self):
-        #Create AI world
-        self.AIworld = AIWorld(render)
 
     def loadEntities(self):
         startingPoint = (100, 0, 3)
@@ -91,9 +73,6 @@ class MyApp(ShowBase):
         alnp = render.attachNewNode(alight)
         render.setLight(alnp)
 
-    def gameOver(self):
-        start().end
-
     def mainLoop(self,task):
         self.AIworld.update()
         self.slime.update(self.dt)
@@ -117,5 +96,5 @@ class MyApp(ShowBase):
         self.cam.lookAt(self.slime.model)
         return task.cont
 
-start = Start()
-start.begin()
+App = MyApp()
+App.run()
