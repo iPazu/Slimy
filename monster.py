@@ -2,7 +2,10 @@ from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
 from entity import Entity
 from panda3d.ai import *
-from collision import distance
+from math import sqrt
+
+def distance(u, v):
+    return sqrt((u[0]-v[0])**2 + (u[1]-v[1])**2 + (u[2]-v[2])**2)
 
 class Monster(Entity):
 
@@ -28,7 +31,6 @@ class Monster(Entity):
         self.AIbehaviors = self.AIchar.getAiBehaviors()
         self.AIbehaviors.pursue(self.target.model, 1)
         self.AIbehaviors.wander(50, 0, 50, 1)
-        #self.model.loop("run")
         self.AIbehaviors.pauseAi("pursue")
 
     def detection(self):

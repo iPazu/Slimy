@@ -1,8 +1,8 @@
 from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
-from collision import distance
 
 class Entity():
+    
     def __init__(self, terrain, initialPos, ModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass):
 
         self.speed = LVecBase3f(0, 0, 0) # initialize as static object
