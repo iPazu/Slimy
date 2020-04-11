@@ -1,0 +1,61 @@
+<Comment> {
+  "egg-texture-cards -o assets/gui/button_play.egg -p 240,240 assets/gui/button_ready.png assets/gui/button_over.png"
+}
+<Texture> button_ready {
+  "assets/gui/button_ready.png"
+}
+<Texture> button_over {
+  "assets/gui/button_over.png"
+}
+<Group> {
+  <Switch> { 1 }
+  <Scalar> fps { 2 }
+  <VertexPool> vpool {
+    <Vertex> 0 {
+      -1.56458333333333 0.520833333333333 0
+      <UV> { 0 1 }
+    }
+    <Vertex> 1 {
+      -1.56458333333333 -0.520833333333333 0
+      <UV> { 0 0 }
+    }
+    <Vertex> 2 {
+      1.56458333333333 -0.520833333333333 0
+      <UV> { 1 0 }
+    }
+    <Vertex> 3 {
+      1.56458333333333 0.520833333333333 0
+      <UV> { 1 1 }
+    }
+    <Vertex> 4 {
+      -1.56458333333333 0.520833333333333 0
+      <UV> { 0 1 }
+    }
+    <Vertex> 5 {
+      -1.56458333333333 -0.520833333333333 0
+      <UV> { 0 0 }
+    }
+    <Vertex> 6 {
+      1.56458333333333 -0.520833333333333 0
+      <UV> { 1 0 }
+    }
+    <Vertex> 7 {
+      1.56458333333333 0.520833333333333 0
+      <UV> { 1 1 }
+    }
+  }
+  <Group> button_ready {
+    <Polygon> {
+      <RGBA> { 1 1 1 1 }
+      <TRef> { button_ready }
+      <VertexRef> { 0 1 2 3 <Ref> { vpool } }
+    }
+  }
+  <Group> button_over {
+    <Polygon> {
+      <RGBA> { 1 1 1 1 }
+      <TRef> { button_over }
+      <VertexRef> { 4 5 6 7 <Ref> { vpool } }
+    }
+  }
+}

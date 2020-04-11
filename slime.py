@@ -4,10 +4,12 @@ from entity import Entity
 from math import log2
 import time
 class Slime(Entity):
-    def __init__(self,terrain,initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass):
+
+    def __init__(self, terrain, initialPos, slimeModelPath, scale, lifePoint, volumicMass, movingSpeed):
+
         #initialise parent stuff
-        self.movingSpeed = 10
-        Entity.__init__(self,initialPos,terrain, slimeModelPath, floorPos, self.movingSpeed, scale, lifePoint, volumicMass)
+        Entity.__init__(self, terrain, initialPos, slimeModelPath, scale, movingSpeed, scale, lifePoint, volumicMass)
+
         #init constants
         self.jumpSpeed = LVecBase3f(0, 0, 8)
         self.dashSpeed = 15
@@ -20,7 +22,7 @@ class Slime(Entity):
         self.e = KeyboardButton.asciiKey('e')
         self.keymaplist = [self.forward, self.backward, self.right, self.left]
         self.t0 = 0
-        self.dashDelay = 0.005
+        self.dashDelay = 5
 
         base.accept('space', self.jump,[self.jumpSpeed])
 
