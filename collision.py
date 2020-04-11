@@ -8,24 +8,40 @@ class Collision():
 
     def __init__(self,entities):
         self.entities = entities
-        self.isCollided = []
 
-    def collisionDetection(self):
-        for a in range(len(self.entities)):
-            for b in range(a):
-                self.isCollided.append((distance(self.entities[a].pos, self.entities[b].pos) <= max(self.entities[a].scale, self.entities[b].scale), self.entities[a], self.entities[b]))
+    def start(self):
+        #Initialisation of collision related objet
+        base.cTrav = CollisionTraverser()
+        #self.collHandEvent = CollisionHandlerEvent()
+        #self.collHandEvent.addInPattern('into-%in')
+        pusher = CollisionHandlerPusher()
+        lifter = CollisionHandlerFloor()
 
-    def consequences(self):
-        for i in range(len(self.isCollided)):
-            if self.isCollided[i][0] == True :
-                if self.isCollided[i][1] == self.entities[0] and self.entities[0].scale > self.isCollided[i][2].scale:
-                    self.isCollided[i][2].dommage(1000, self)  
-                """else:
-                    self.isCollided[i][1].model.setHpr(0, 0, -180)
-                    self.isCollided[i][2].model.setHpr(0, 0, 0)"""
+        # Initialisation of list
+        self.entitiesNode = []
+        self.entitiesFloor = []
+        self.entitiesC = []
+        """self.collCount = 0"""
 
-    def update(self):
-        self.collisionDetection()
-        self.consequences()
+        # For all entities
+        for i in range(len(self.entities)):
+            # Create the node
+            self.entitiesNode.append(CollisionNode(str(i)+" entities"))
+            # Add solid to the node
+            self.entitiesNode[i].addSolid(CollisionBox((0, 0, 0), 1, 1, 1))
+            self.entitiesNode[i].addSolid(CollisionRay((0, 0, 0), (0, 0, -1)))
+            #
+            """
+            nodeStr = 'CollisionHull{0}_{1}'.format(self.collCount, self.entitiesNode[i].name)
+            self.collCount += 1
+            self.accept('into-' + nodeStr, self.collide)
+            """
+            # Add the nood to collider list
+            self.entitiesC.append(self.entities[i].model.attachNewNode(self.entitiesNode[i]))
+            # Initialise Collision
+            base.cTrav.addCollider(self.entitiesC[i], pusher)
+            #base.cTrav.addCollider(self.entitiesC[i], self.collHandEvent)
+            pusher.addCollider(self.entitiesC[i], self.entities[i].model, base.drive.node())
+            lifter.addCollider(self.entitiesC[i], self.entities[i].model)
 
 

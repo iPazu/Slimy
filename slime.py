@@ -1,8 +1,9 @@
 from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
 from entity import Entity
-from math import log2
+from math import log2, sqrt, atan2, degrees
 import time
+
 class Slime(Entity):
 
     def __init__(self, terrain, initialPos, slimeModelPath, scale, lifePoint, volumicMass, movingSpeed):
@@ -61,5 +62,13 @@ class Slime(Entity):
         self.model.setScale(LVecBase3f(2 - 0.5*log2(self.pos[2]- self.groundHeight +4),2 - 0.5*log2(self.pos[2]- self.groundHeight +4),0.5*log2(self.pos[2]- self.groundHeight +4)))
 
     def updatePos(self):
-        self.model.setPos(self.pos)  
+        self.model.setPos(self.pos) 
+    
+    def updateHpr(self):
+        mw = base.mouseWatcherNode
+        if mw.hasMouse():
+            x, y = mw.getMouse()
+            angle = degrees(atan2(y, x))
+            self.Hpr = (angle, 0, 0)
+            self.model.setHpr(self.Hpr)
 

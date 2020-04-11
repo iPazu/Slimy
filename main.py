@@ -55,9 +55,6 @@ class MyApp(ShowBase):
         # Load Skybox
         Skybox(self.render)
 
-        # AI
-        self.AIworld = AIWorld(render)
-
         #register events
         self.ydelta = 100
         self.zdelta = 20
@@ -79,10 +76,14 @@ class MyApp(ShowBase):
         startingPoint = (100, 0, 3)
         #terrain, initialPos, slimeModelPath, scale, lifePoint, volumicMass, movingSpeed
         self.slime = Slime(self.terrain, startingPoint, "assets/models/slime.egg", 2, 100, 0.03, 10) 
-        
-        #for i in range(10):
+        # AI
+        self.AIworld = AIWorld(render)
+        for i in range(10):
             #terrain, initialPos, modelPath, movingSpeed, scale, lifePoint, volumicMass, target, aiWorld, detectionDistance, name)
-            #Monster(self.terrain, (i*10,i*10,1), "assets/models/slime.egg", 100, i+1, (i+1)*100, 100, self.slime, self.AIworld, 300, str(i))
+            Monster(self.terrain, (i*10,i*10,1), "assets/models/slime.egg", 100, i+1, (i+1)*100, 100, self.slime, self.AIworld, 300, str(i))
+        self.entities = [self.slime]+Monster.monsters
+        self.collision = Collision(self.entities)
+        self.collision.start()
 
     def setLights(self):
         sun = DirectionalLight("sun")
@@ -105,7 +106,6 @@ class MyApp(ShowBase):
         self.slime.update(self.dt)
         for m in Monster.monsters:
             m.update()
-        #self.collision.update()
         return task.cont
 
     def camzoom(self,decrease):
