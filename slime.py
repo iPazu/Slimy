@@ -10,6 +10,7 @@ class Slime(Entity):
         #initialise parent stuff
         Entity.__init__(self, terrain, initialPos, slimeModelPath, scale, movingSpeed, scale, lifePoint, volumicMass)
 
+
         #init constants
         self.jumpSpeed = LVecBase3f(0, 0, 8)
         self.dashSpeed = 15
@@ -23,6 +24,7 @@ class Slime(Entity):
         self.keymaplist = [self.forward, self.backward, self.right, self.left]
         self.t0 = 0
         self.dashDelay = 5
+        self.initCollisionBox()
 
         base.accept('space', self.jump,[self.jumpSpeed])
 
@@ -32,6 +34,8 @@ class Slime(Entity):
             #self.updateJumpAnimation()   
             self.pos += self.speed*dt
             self.speed += self.externalg*dt
+            self.speed[0] = 0
+            self.speed[1] = 0
         else:
             self.pos[2] = self.groundHeight
             self.speed = LVecBase3f(0, 0, 0)
@@ -56,10 +60,26 @@ class Slime(Entity):
     def jump(self, jspeed):
         if not self.is_flying:
             self.speed += jspeed
-    
+    def setColor(self,r,g,b,a):
+        print("Changing color of the slime with colors {} {} {} {}".format(r,g,b,a))
+        self.model.setColor(r,g,b,a)
+
     def updateJumpAnimation(self):
         self.model.setScale(LVecBase3f(2 - 0.5*log2(self.pos[2]- self.groundHeight +4),2 - 0.5*log2(self.pos[2]- self.groundHeight +4),0.5*log2(self.pos[2]- self.groundHeight +4)))
 
     def updatePos(self):
-        self.model.setPos(self.pos)  
+        self.model.setPos(self.pos)
+    def teleport(self,posx,posy,posz):
+        self.pos = LVecBase3f(posx,posy,posz)
+    
+    def initCollisionBox(self):
+        # Create a collsion node for this object.
+        self.cNode = CollisionNode('slime')
+        # Attach a collision sphere solid to the collision node.
+        self.cNode.addSolid(CollisionSphere(0,0,0,1))
+        # Attach the collision node to the object's model.
+        self.slimeC = self.model.attachNewNode(self.cNode)
+        # Set the object's collision node to render as visible.
+        #self.slimeC.show()
+
 

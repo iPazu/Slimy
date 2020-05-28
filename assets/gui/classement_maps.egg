@@ -1,0 +1,61 @@
+<Comment> {
+  "egg-texture-cards -o classement_maps.egg -p 240,240 classement_ready.png classement_over.png"
+}
+<Texture> classement_ready {
+  classement_ready.png
+}
+<Texture> classement_over {
+  classement_over.png
+}
+<Group> {
+  <Switch> { 1 }
+  <Scalar> fps { 2 }
+  <VertexPool> vpool {
+    <Vertex> 0 {
+      -1.17291666666667 0.389583333333333 0
+      <UV> { 0 1 }
+    }
+    <Vertex> 1 {
+      -1.17291666666667 -0.389583333333333 0
+      <UV> { 0 0 }
+    }
+    <Vertex> 2 {
+      1.17291666666667 -0.389583333333333 0
+      <UV> { 1 0 }
+    }
+    <Vertex> 3 {
+      1.17291666666667 0.389583333333333 0
+      <UV> { 1 1 }
+    }
+    <Vertex> 4 {
+      -1.17291666666667 0.389583333333333 0
+      <UV> { 0 1 }
+    }
+    <Vertex> 5 {
+      -1.17291666666667 -0.389583333333333 0
+      <UV> { 0 0 }
+    }
+    <Vertex> 6 {
+      1.17291666666667 -0.389583333333333 0
+      <UV> { 1 0 }
+    }
+    <Vertex> 7 {
+      1.17291666666667 0.389583333333333 0
+      <UV> { 1 1 }
+    }
+  }
+  <Group> classement_ready {
+    <Polygon> {
+      <RGBA> { 1 1 1 1 }
+      <TRef> { classement_ready }
+      <VertexRef> { 0 1 2 3 <Ref> { vpool } }
+    }
+  }
+  <Group> classement_over {
+    <Polygon> {
+      <RGBA> { 1 1 1 1 }
+      <TRef> { classement_over }
+      <VertexRef> { 4 5 6 7 <Ref> { vpool } }
+    }
+  }
+}

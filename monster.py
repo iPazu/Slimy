@@ -2,7 +2,6 @@ from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
 from entity import Entity
 from panda3d.ai import *
-from collision import distance
 
 class Monster(Entity):
 

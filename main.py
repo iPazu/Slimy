@@ -2,20 +2,21 @@ from direct.showbase.ShowBase import ShowBase
 from direct.actor.Actor import Actor
 from slime import Slime
 from monster import Monster
-from collision import Collision, distance
 from panda3d.core import *
 from terrain import Terrain
 from skybox import Skybox
 from direct.filter.CommonFilters import CommonFilters
 from panda3d.ai import *
+from panda3d.physics import *
 from menu import Menu
 import sys
 import time
-from panda3d.core import WindowProperties
-
+from cuboid import Cuboid
+from module import Module
+import pconsole as pc
 class MyApp(ShowBase):
     def __init__(self):
-
+        self.debug = True
         ShowBase.__init__(self)
 
         # the dt should depend on the framerate
@@ -26,11 +27,12 @@ class MyApp(ShowBase):
         self.terrain = Terrain(1024)
         self.loadMenu()
 
-        self.disableMouse()
-
+        if(self.debug == False):
+            self.disableMouse()
         
     def loadMenu(self):
-        self.accept("Menu-Start", self.loadGame)
+        self.accept("Menu-Start-Parkour", self.loadGame,['parkour'])
+        self.accept("Menu-Start-World", self.loadGame,['world'])
         self.menu = Menu()
         self.show_cursor()
     def exitMenu(self):
@@ -39,19 +41,24 @@ class MyApp(ShowBase):
         self.ignore("Menu-Quit")
         self.menu.hideStartMenu()
         
-    def loadGame(self):
+    def loadGame(self,gamemode):
         self.exitMenu()
+        self.gamemode = gamemode
         print("Loading game")
         self.state = 'Loading'
-        print("Showing loading menu")
         
-        self.hide_cursor
+        if(self.debug == False):
+            self.hide_cursor
         self.setLights()
+
         self.terrain.load()
+            
+        
         self.loadEntities()
 
         #positionate the camera
-        self.camera.lookAt(self.slime.model)
+        if(self.debug == False):
+            self.camera.lookAt(self.slime.model)
         # Load Skybox
         Skybox(self.render)
 
@@ -66,20 +73,30 @@ class MyApp(ShowBase):
 
         #register tasks
         self.task_mgr.add(self.mainLoop, "MainTask")
-        self.task_mgr.add(self.updateCamera, "CameraTask")
+        if(self.debug == False):
+            self.task_mgr.add(self.updateCamera, "CameraTask")
         self.startGame()
 
     def startGame(self):
         print("Starting game")
         self.setFrameRateMeter(True)
         self.state = 'Game'
+        
+        #init console
+        self.userConsole = pc.Console()
+        commands = {"restart":self.__init__,
+                    "teleport": self.slime.teleport,
+                    "color": self.slime.setColor
+                    }
+        self.userConsole.create(commands,app=self)
 
-        pass
     def loadEntities(self):
         startingPoint = (100, 0, 3)
+        c = Cuboid((0,0,20),(20,120,20))
+        c.show()
         #terrain, initialPos, slimeModelPath, scale, lifePoint, volumicMass, movingSpeed
-        self.slime = Slime(self.terrain, startingPoint, "assets/models/slime.egg", 2, 100, 0.03, 10) 
-        
+        self.slime = Slime(self.terrain, startingPoint, "assets/models/new_slime.egg", 2, 100, 0.03, 10) 
+        c.addCollisionTo(self.slime.slimeC,self.slime.model)
         #for i in range(10):
             #terrain, initialPos, modelPath, movingSpeed, scale, lifePoint, volumicMass, target, aiWorld, detectionDistance, name)
             #Monster(self.terrain, (i*10,i*10,1), "assets/models/slime.egg", 100, i+1, (i+1)*100, 100, self.slime, self.AIworld, 300, str(i))
