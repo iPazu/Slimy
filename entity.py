@@ -1,7 +1,12 @@
 from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
+from math import sqrt
+
+def distance(A, B):
+    return round(sqrt( (A[0]-B[0])**2 + (A[1]-B[1])**2 + (A[2]-B[2])**2 ))
 
 class Entity():
+
     def __init__(self, terrain, initialPos, ModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass):
 
         self.speed = LVecBase3f(0, 0, 0) # initialize as static object
@@ -12,6 +17,7 @@ class Entity():
         self.movingSpeed = movingSpeed
         self.scale = scale
         self.lifePoint = lifePoint
+        self.maxLifePoint = lifePoint
         self.volumicMass = volumicMass
         self.mass = scale * volumicMass
         self.terrain = terrain
@@ -25,9 +31,6 @@ class Entity():
 
         # state
         self.is_flying = (self.pos[2] > self.groundHeight)
-
-    def remove(self):
-        self.removeNode()
     
     def spawn(self,modelPath,initialPos):
         self.model = loader.loadModel(modelPath)
@@ -41,7 +44,7 @@ class Entity():
         self.mass = self.scale * self.volumicMass
 
     def setScale(self, scale):
-        self.scale = scale
+        self.scale, self.groundHeight = scale, scale
         self.model.setScale(self.scale)
         self.updateMass()
 
@@ -50,7 +53,6 @@ class Entity():
 
     def getHpr(self):
         return self.model.getHpr()
-
 
     """
     #if you want to test if an entithy is properly remove

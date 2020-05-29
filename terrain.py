@@ -21,7 +21,7 @@ class Terrain():
     def load(self):
         self.world = World(self.terrain,self.size)
         self.world.load()
-        #self.addWorldTrees()
+        self.addWorldTrees()
 
     def addWorldTrees(self):
         for i in range(self.treenumber):

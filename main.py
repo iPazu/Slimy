@@ -9,14 +9,16 @@ from direct.filter.CommonFilters import CommonFilters
 from panda3d.ai import *
 from panda3d.physics import *
 from menu import Menu
+from collision import Collision, distance
+from spawn import Spawn
 import sys
 import time
 from cuboid import Cuboid
-from module import Module
 import pconsole as pc
+
 class MyApp(ShowBase):
     def __init__(self):
-        self.debug = True
+        self.debug = False
         ShowBase.__init__(self)
 
         # the dt should depend on the framerate
@@ -89,17 +91,27 @@ class MyApp(ShowBase):
                     "color": self.slime.setColor
                     }
         self.userConsole.create(commands,app=self)
-
+    def endGame(self):
+        if self.slime.lifePoint <= 0:
+            print("LOSER")
+        else:
+            print("WINNER")
+        sys.exit()
+        """
+        for entity in self.entities:
+            entity.remove()
+        self.loadMenu()
+        """
+    
     def loadEntities(self):
-        startingPoint = (100, 0, 3)
-        c = Cuboid((0,0,20),(20,120,20))
-        c.show()
-        #terrain, initialPos, slimeModelPath, scale, lifePoint, volumicMass, movingSpeed
-        self.slime = Slime(self.terrain, startingPoint, "assets/models/new_slime.egg", 2, 100, 0.03, 10) 
-        c.addCollisionTo(self.slime.slimeC,self.slime.model)
-        #for i in range(10):
-            #terrain, initialPos, modelPath, movingSpeed, scale, lifePoint, volumicMass, target, aiWorld, detectionDistance, name)
-            #Monster(self.terrain, (i*10,i*10,1), "assets/models/slime.egg", 100, i+1, (i+1)*100, 100, self.slime, self.AIworld, 300, str(i))
+        startingPoint = (100, 0, 10)
+        #terrain, initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass, movingSpeed, dt
+        self.slime = Slime(self.terrain, startingPoint, "assets/models/new_slime.egg", 10, 10, 100, 0.01, 10, self.dt) 
+        # AI
+        self.AIworld = AIWorld(render)
+        self.collision = Collision([self.slime]+Monster.monster)
+        self.spawn = Spawn([self.slime]+Monster.monster, self.terrain, self.AIworld, self.collision)
+        self.spawn.spawn()
 
     def setLights(self):
         sun = DirectionalLight("sun")
@@ -116,13 +128,12 @@ class MyApp(ShowBase):
         render.setLight(alnp)
 
     def mainLoop(self,task):
-        if(self.state != 'Game'):
-            return
+        if(self.slime.lifePoint <= 0 or self.slime.scale >= 10000000):
+            self.endGame()
         self.AIworld.update()
-        self.slime.update(self.dt)
-        for m in Monster.monsters:
-            m.update()
-        #self.collision.update()
+        self.spawn.spawn()
+        for e in [self.slime]+Monster.monster:
+            e.update()
         return task.cont
 
     def camzoom(self,decrease):
