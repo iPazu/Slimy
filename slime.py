@@ -59,5 +59,24 @@ class Slime(Entity):
         self.model.setScale(LVecBase3f(2 - 0.5*log2(self.pos[2]- self.groundHeight +4),2 - 0.5*log2(self.pos[2]- self.groundHeight +4),0.5*log2(self.pos[2]- self.groundHeight +4)))
 
     def updatePos(self):
+<<<<<<< Updated upstream
         self.model.setPos(self.pos)  
 
+=======
+        self.model.setPos(self.pos)
+
+    def damage(self, damage):
+        self.lifePoint -= damage
+
+    def remove(self):
+        self.model.removeNode()
+
+    def updateHpr(self):
+        mw = base.mouseWatcherNode
+        if mw.hasMouse():
+            x, y = mw.getMouse()
+            angle = degrees(atan2(y, x))
+            self.Hpr = (angle+90, 0, 0)
+            self.model.setHpr(self.Hpr)
+            
+>>>>>>> Stashed changes
