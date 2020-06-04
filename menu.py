@@ -13,9 +13,10 @@ class Menu:
 
     def loadStartMenu(self):
         base.setBackgroundColor(0,0.25,0.4)
+
         self.title=OnscreenImage(image=str(MAINDIR)+'/assets/gui/title.png',pos=(0,0,0.20),scale=(0.5,0.5,0.125))
         self.title.setTransparency(1)
-        
+
         mapsparkour = loader.loadModel("assets/gui/parkour_maps")
         mapsworld = loader.loadModel("assets/gui/world_maps")
         mapsranking = loader.loadModel("assets/gui/classement_maps")
@@ -41,8 +42,10 @@ class Menu:
             command = base.messenger.send,
             scale = 0.25,
             extraArgs = ["Menu-Start-Ranking"])
-        
+
+
     def hideStartMenu(self):
+        print("hiding start menu")
         self.world_button.hide()
         self.ranking_button.hide()
         self.parkour_button.hide()        

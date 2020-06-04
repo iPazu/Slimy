@@ -6,13 +6,13 @@ import time
 
 class Slime(Entity):
 
-    def __init__(self, terrain, initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass, movingSpeed, dt):
+    def __init__(self, terrain, initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass, movingSpeed, dt, name):
 
         #initialise parent stuff
-        Entity.__init__(self, terrain, initialPos, slimeModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass)
+        Entity.__init__(self, terrain, initialPos, slimeModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass, name)
 
         #init constants
-        self.jumpSpeed = LVecBase3f(0, 0, 8)
+        self.jumpSpeed = LVecBase3f(0, 0, 15)
         self.dashSpeed = 15
 
         #user controls
@@ -21,10 +21,12 @@ class Slime(Entity):
         self.left = KeyboardButton.asciiKey('q')
         self.right = KeyboardButton.asciiKey('d')
         self.e = KeyboardButton.asciiKey('e')
+        self.t = KeyboardButton.asciiKey('t')
         self.keymaplist = [self.forward, self.backward, self.right, self.left]
         self.t0 = 0
         self.dashDelay = 5
         self.dt = dt
+        self.projectile = False
 
         base.accept('space', self.jump,[self.jumpSpeed])
 
@@ -44,6 +46,8 @@ class Slime(Entity):
             self.speed[1] -= 5
         if self.speed[1] != 0 and self.speed[1] < 0:
             self.speed[1] += 5
+        if self.projectile == True and base.mouseWatcherNode.isButtonDown(self.t):
+            pass
         self.is_flying = (self.pos[2] > self.groundHeight) # status updating
         self.updatePos()
 
@@ -55,7 +59,7 @@ class Slime(Entity):
                 movingIncrementer = self.movingSpeed
                 if(isDown(self.e)):
                     if int(round(time.time() * 1000)) - self.t0 > self.dashDelay*1000:
-                        movingIncrementer = self.dashSpeed*8
+                        movingIncrementer = self.dashSpeed*50
                         self.t0 = int(round(time.time() * 1000))
                 if(x < 2): #backward or forward
                     self.speed[1] = movingIncrementer * (-1)**x
@@ -86,9 +90,10 @@ class Slime(Entity):
             self.Hpr = (angle+90, 0, 0)
             self.model.setHpr(self.Hpr)
 
+    def teleport(self,posx,posy,posz):
+        self.pos = LVecBase3f(posx,posy,posz)
+
     def setColor(self,r,g,b,a):
         print("Changing color of the slime with colors {} {} {} {}".format(r,g,b,a))
         self.model.setColor(r,g,b,a)
 
-    def teleport(self,posx,posy,posz):
-        self.pos = LVecBase3f(posx,posy,posz)

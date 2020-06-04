@@ -7,13 +7,14 @@ def distance(A, B):
 
 class Entity():
 
-    def __init__(self, terrain, initialPos, ModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass):
+    def __init__(self, terrain, initialPos, ModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass, name):
 
         self.speed = LVecBase3f(0, 0, 0) # initialize as static object
 
         self.spawn(ModelPath,initialPos)
         
         #init constants
+        self.name = name
         self.movingSpeed = movingSpeed
         self.scale = scale
         self.lifePoint = lifePoint

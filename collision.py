@@ -22,12 +22,14 @@ class Collision(DirectObject):
         self.entitiesNode = []
         self.entitiesC = []
 
-        self.addColliderObject(self.entities[0], 0)
+        self.addColliderObject(self.entities[0])
     
-    def addColliderObject(self, entity, number):
+    def addColliderObject(self, entity):
+        name = entity.name
+        number = int(entity.name[:8])
         self.entities = [self.entities[0]]+Monster.monster
         # Create the node
-        self.entitiesNode.append(CollisionNode(str(number)))
+        self.entitiesNode.append(CollisionNode(name))
         # Add solid to the node
         self.entitiesNode[number].addSolid(CollisionBox((0, 0, 0), 1, 1, 1))
         # Add the nood to collider list
@@ -36,7 +38,7 @@ class Collision(DirectObject):
         base.cTrav.addCollider(self.entitiesC[number], pusher)
         pusher.addCollider(self.entitiesC[number], entity.model, base.drive.node())
         lifter.addCollider(self.entitiesC[number], entity.model)
-        self.accept('0-into-'+str(number), self.collide1)
+        self.accept('00000000slime-into-'+name, self.collide1)
 
     def collide1(self, collEntry):
         self.entities = [self.entities[0]]+Monster.monster
@@ -49,11 +51,11 @@ class Collision(DirectObject):
                 i += 1
             monster = self.entities[i]
             if slime.scale > monster.scale:
-                monster.damage(25)
+                monster.damage(50)
             else:
                 slime.damage(25)
         else:
-            print("AVOID ERROR")
+            print("AVOID")
         """
         Sequence(
             Func(collParent.setColor, (1, 0, 0, 1)),
