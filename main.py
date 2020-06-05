@@ -101,8 +101,8 @@ class MyApp(ShowBase):
         Skybox(self.render)
 
         #register events
-        self.ydelta = 100
-        self.zdelta = 20
+        self.ydelta = 500
+        self.zdelta = 100
         self.accept("wheel_up", self.camzoom,[True])
         self.accept("wheel_down", self.camzoom,[False])
 
