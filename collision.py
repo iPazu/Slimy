@@ -107,7 +107,7 @@ class Collision(DirectObject):
             self.music = base.loader.loadSfx("assets/sounds/hitDamage.mp3")
             self.music.play()
             self.music.setVolume(0.1)
-            slime.damage(25)
+            slime.damage(10)
         """
         Sequence(
             Func(collParent.setColor, (1, 0, 0, 1)),
