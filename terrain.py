@@ -71,20 +71,26 @@ class World():
         self.terrain.setFrame(-self.size,self.size,-self.size,self.size)
 
         # Store the root NodePath for convenience
-        root = NodePath(self.terrain.generate())
-        root.reparentTo(render)
-        root.setHpr(0,-90,0)
+        self.root = NodePath(self.terrain.generate())
+        self.root.reparentTo(render)
+        self.root.setHpr(0,-90,0)
         try:
-            root.setShader(Shader.load(Shader.SL_GLSL, "assets/shaders/shader.vert", "assets/shaders/shader.frag"))
+            self.loadTexture()
         except IOError:
             print("World image not found, create new image.")
             self.pimage.createImage()
-            root.setShader(Shader.load(Shader.SL_GLSL, "assets/shaders/shader.vert", "assets/shaders/shader.frag"))
-
-        root.setShaderInput("texInput", loader.loadTexture("assets/texture/perlin.png"))
+            self.loadTexture()
 
         # Generate it.
         self.terrain.generate()
+
+    def loadTexture(self):
+        try:
+            root.setShader(Shader.load(Shader.SL_GLSL, "assets/shaders/shader.vert", "assets/shaders/shader.frag"))
+            print("Loaded texture with shaders !")
+        except:
+            self.root.setTexture(loader.loadTexture("assets/texture/mapisland.png"))
+            print("Failed to load with shaders loading vanilla")
 
 class Biome():
     def __init__(self,name, havetrees,treesrate,treesmodelspaths):

@@ -8,7 +8,7 @@ class EvilSlime(Monster):
 
     def __init__(self, terrain, initialPos, target, aiWorld, size, name):
         #terrain, initialPos, modelPath, movingSpeed, scale, lifePoint, volumicMass, target, aiWorld, detectionDistance, name, specificUpdate
-        Monster.__init__(self, terrain, initialPos, "assets/models/evil_slime.egg", 100, size, 50, 100, target, aiWorld, 500, name, self.detection)
+        Monster.__init__(self, terrain, initialPos, "assets/models/evil_slime.egg", 10, size, 50+size//2, 10, target, aiWorld, 500, name, self.detection)
         #initialise AI stuff related to this object
         targetDistance = distance(self.pos, self.target.pos)
         self.statusD = (targetDistance < self.detectionDistance)
@@ -39,3 +39,4 @@ class EvilSlime(Monster):
                     self.AIbehaviors.resumeAi("flee")
         self.statusS = statusS
         self.statusD = statusD
+        self.model.setHpr((0, 0, 0))

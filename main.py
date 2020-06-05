@@ -9,17 +9,20 @@ from terrain import Terrain
 from skybox import Skybox
 from direct.filter.CommonFilters import CommonFilters
 from panda3d.ai import *
-from menu import Menu
+from gui.menu import Menu
 from spawn import Spawn
 import sys
-import time
 from panda3d.core import WindowProperties
 from panda3d.physics import *
 from cuboid import Cuboid
 import pconsole as pc
-from classement import Classement
+from gui.classement import Classement
 from database import Database
+from gui.gameover import Gameover
 import os
+import getpass
+from gui.hud import Hud
+from datetime import datetime as date
 
 class MyApp(ShowBase):
 
@@ -31,22 +34,26 @@ class MyApp(ShowBase):
         self.dt = 0.25
 
         self.database = Database()
-        self.database.insertValues()
+        self.ranking = self.database.getRankingFromDatabase()
 
         #initiate game state
         self.state = 'Menu'
         self.terrain = Terrain(1024)
+        self.classement = Classement(self.ranking)
+        self.classement.hideMenu()
+
+        self.menu = Menu()
         self.loadStartMenu()
 
         if(self.debug == False):
             self.disableMouse()
         
     def loadStartMenu(self):
-        self.accept("Menu-Start-Parkour", self.loadGame,['parkour'])
-        self.accept("Menu-Start-World", self.loadGame,['world'])
+        self.accept("Menu-Start-Parkour", self.loadGame)
+        self.accept("Menu-Start-World", self.loadGame)
         self.accept("Menu-Start-Ranking", self.loadRankingMenu)
 
-        self.menu = Menu()
+        self.menu.showStartMenu()
         self.show_cursor()
 
     def exitStartMenu(self):
@@ -55,20 +62,26 @@ class MyApp(ShowBase):
         self.ignore("Menu-Start-Parkour")
         self.menu.hideStartMenu()
 
+    def loadGameOverMenu(self,score):
+        self.gameover = Gameover(score)
+        taskMgr.doMethodLater(5, self.restartGame,'timer')
+        self.show_cursor()
+
     def loadRankingMenu(self):
-        self.accept("Menu-Ranking-Return", self.loadGame,['parkour'])
+        self.accept("Menu-Ranking-Return", self.exitRankingMenu)
         self.exitStartMenu()
-        self.classement = Classement()
+        self.classement.showMenu()
+        
         self.show_cursor()
 
     def exitRankingMenu(self):
+        print("hidding ranking menu")
         self.ignore("Menu-Ranking-Return")
-        self.ranking.hideStartMenu()
+        self.classement.hideMenu()
         self.loadStartMenu()
         
-    def loadGame(self,gamemode):
+    def loadGame(self):
         self.exitStartMenu()
-        self.gamemode = gamemode
         print("Loading game")
         self.state = 'Loading'
         
@@ -77,7 +90,8 @@ class MyApp(ShowBase):
         self.setLights()
 
         self.terrain.load()
-
+        self.hud = Hud()
+        self.hud.show()
         self.loadEntities()
 
         #positionate the camera
@@ -113,26 +127,30 @@ class MyApp(ShowBase):
         self.userConsole = pc.Console()
         commands = {"restart":self.__init__,
                     "teleport": self.slime.teleport,
-                    "color": self.slime.setColor
+                    "color": self.slime.setColor,
+                    "stop": self.endGame
                     }
         self.userConsole.create(commands,app=self)
         """
-
+        
     def endGame(self):
+        self.state = 'Finished'
         print("SCORE : "+str(Monster.score))
-        if self.slime.lifePoint <= 0:
-            print("LOSER")
-        else:
-            print("WINNER")
-        sys.exit()
+        self.loadGameOverMenu(Monster.score)
+        today = date.today()
+        name = getpass.getuser()
+        self.database.insertValues(name.capitalize(),Monster.score,today.strftime("%d/%m/%Y"))
+
+    def restartGame(self,task):
+        os.execl(sys.executable, sys.executable, *sys.argv)
 
     def loadEntities(self):
         startingPoint = (100, 0, 10)
-        #terrain, initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass, movingSpeed, dt
-        self.slime = Slime(self.terrain, startingPoint, "assets/models/new_slime.egg", 10, 10, 100, 0.01, 10, self.dt, "00000000slime") 
         #AI
         self.AIworld = AIWorld(render)
-        self.collision = Collision([self.slime]+Monster.monster)
+        self.collision = Collision(Monster.monster)
+        #terrain, initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass, movingSpeed, dt
+        self.slime = Slime(self.terrain, startingPoint, "assets/models/new_slime.egg", 10, 10, 100, 0.01, 10, self.dt, "slime", self.collision) 
         self.spawn = Spawn([self.slime]+Monster.monster, self.terrain, self.AIworld, self.collision)
         self.spawn.spawn()
 
@@ -151,12 +169,15 @@ class MyApp(ShowBase):
         render.setLight(alnp)
 
     def mainLoop(self,task):
+        if(self.state == "Finished"):
+            return
         if(self.slime.lifePoint <= 0 or self.slime.scale >= 1000):
             self.endGame()
         self.AIworld.update()
         self.spawn.spawn()
         for e in [self.slime]+Monster.monster:
             e.update()
+        self.hud.setLifeBarValue(self.slime.lifePoint)
         return task.cont
 
     def camzoom(self,decrease):

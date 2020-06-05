@@ -31,6 +31,18 @@ class Monster(Entity):
         Monster.monster.append(self)
 
     def remove(self):
+        if self.name[8:] == "candy":
+            self.music = base.loader.loadSfx("assets/sounds/candy.mp3")
+            self.music.play()
+            self.music.setVolume(0.1)
+        elif self.name[8:] == "kamikaze":
+            self.music = base.loader.loadSfx("assets/sounds/hitDamage.mp3")
+            self.music.play()
+            self.music.setVolume(0.1)
+        else:
+            self.music = base.loader.loadSfx("assets/sounds/slime.mp3")
+            self.music.play()
+            self.music.setVolume(0.1)
         self.aiWorld.removeAiChar(self.name)
         self.model.removeNode()
         Monster.score += self.scale
@@ -46,7 +58,6 @@ class Monster(Entity):
     def generalUpdate(self,):
         self.pos = self.model.getPos()
         self.model.setPos((self.pos[0], self.pos[1], self.scale))
-        self.model.setHpr((0, 0, 0))
 
     def update(self,):
         self.generalUpdate()
