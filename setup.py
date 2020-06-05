@@ -1,34 +1,36 @@
-
 from setuptools import setup
 
 setup(
-    name="Slimy",
-    version='1.0',
+    name = "Slimy",
     options = {
         'build_apps': {
             'include_modules': [
-                'pypresence'
+                'pconsole',
+                'mysql-connector'
             ],
-            'platforms': ['win_amd64'
-            ],
-            'include_patterns': [
+            'include_patterns':[
+                '**/*.bmp',
                 '**/*.png',
-                '**/*.jpg',
+                '**/*.ttf',
                 '**/*.egg',
-                '**/*.ptf',
+                '**/*.frag',
+                '**/*.vert',
                 '**/*.mp3'
             ],
-            'gui_apps': {
-                'Slimy': 'main.py',
+            'platforms':[
+                'win_amd64'
+                #,'macosx_10_6_x86_64'
+            ],
+            'gui_apps':{
+                'Slimy':'main.py',
             },
-            'log_filename': '$USER_APPDATA/.Slimy/output.log',
-            'log_append': False,
-            'plugins': [
+            'plugins':[
                 'pandagl',
                 'p3openal_audio',
+                'p3fmod_audio', # idk which one is necessary so I just use both
                 'p3ffmpeg',
-                'p3ptloader',
-            ],
+                'p3ptloader'
+            ]
         }
     }
 )
