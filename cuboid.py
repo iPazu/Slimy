@@ -1,4 +1,5 @@
 from panda3d.core import *
+#This class is obsolete
 class Cuboid():
     def __init__(self,pos,scale):
         self.parts =  [] 

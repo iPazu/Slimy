@@ -5,7 +5,7 @@ from direct.showbase.DirectObject import DirectObject
 from monster import Monster
 from slime import Slime
 from projectile import Projectile
-
+import platform
 def standardization(number):
     number = str(number)
     n = len(number)
@@ -15,7 +15,6 @@ def distance(A, B):
     return round(sqrt( (A[0]-B[0])**2 + (A[1]-B[1])**2 + (A[2]-B[2])**2 ))
 
 class Collision(DirectObject):
-
 
     def __init__(self,entities):
         #Initialisation of collision related objet
@@ -82,9 +81,7 @@ class Collision(DirectObject):
         monster = Monster.monster[i]
         if monster.name[8:] != "candy":
             if monster.name[8:] == "kamikaze" and monster.lifePoint <= projectile.damage:
-                self.music = base.loader.loadSfx("assets/sounds/slime.mp3")
-                self.music.play()
-                self.music.setVolume(0.1)
+                monster.playSound("slime.mp3",0.5)
             monster.damage(projectile.damage)
         projectile.model.setPos(1025, 1025, 0)
         projectile.destroy()
@@ -99,15 +96,13 @@ class Collision(DirectObject):
             i += 1
         monster = self.entities[i]
         if monster.name[8:] == "kamikaze":
-            monster.damage(100)
+            monster.damage(80)
             slime.damage(25)
         elif slime.scale > monster.scale:
             monster.damage(monster.lifePoint)
         else:
-            self.music = base.loader.loadSfx("assets/sounds/hitDamage.mp3")
-            self.music.play()
-            self.music.setVolume(0.1)
-            slime.damage(25)
+            slime.playSound("hitDamage.mp3",0.1)
+            slime.damage(10)
         """
         Sequence(
             Func(collParent.setColor, (1, 0, 0, 1)),

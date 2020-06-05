@@ -42,7 +42,7 @@ class Spawn(DirectObject):
                 EvilSlime(self.terrain, (x, y, 3), self.slime, self.AIworld, size, "evilSlime")
             elif result == "candy":
                 #self, terrain, initialPos, target, aiWorld, size, name
-                size = random.randint(int(i-9), int(i-1))
+                size = random.randint(int(i-9), int(-1+i))
                 Candy(self.terrain, (x, y, 3), self.slime, self.AIworld, size, "candy")
             else:
                 size = int(i//2)

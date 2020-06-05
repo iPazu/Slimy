@@ -87,9 +87,7 @@ class Slime(Entity):
     
     def jump(self, jspeed):
         if not self.is_flying:
-            self.music = base.loader.loadSfx("assets/sounds/jump.mp3")
-            self.music.play()
-            self.music.setVolume(0.1)
+            self.playSound("jump.mp3",0.1)
             self.speed += jspeed
     
     def updateJumpAnimation(self):

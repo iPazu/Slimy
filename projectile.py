@@ -1,6 +1,6 @@
 from math import cos, sin
 from panda3d.core import *
-
+import platform
 class Projectile():
 
     projectile = []
@@ -26,9 +26,7 @@ class Projectile():
         self.model.setPos(self.pos)
         self.damage = damage
         Projectile.projectile.append(self)
-        self.music = base.loader.loadSfx("assets/sounds/bubble.mp3")
-        self.music.play()
-        self.music.setVolume(0.05)
+        self.playSound("buble.mp3",0.1)
 
     def destroy(self,):
         self.model.removeNode()
@@ -40,3 +38,9 @@ class Projectile():
         self.model.setPos(self.pos)
         if self.pos[0] > 1024 or self.pos[0] < -1024 or self.pos[1] > 1024 or self.pos[1] < -1024:
             self.destroy()
+    
+    def playSound(self,name,volume):
+        if(platform.system() == 'Darwin'):
+            sound = base.loader.loadSfx("assets/sounds/"+name)
+            sound.play()
+            sound.setVolume(volume)

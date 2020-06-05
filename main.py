@@ -1,28 +1,33 @@
-from direct.showbase.ShowBase import ShowBase
-from direct.actor.Actor import Actor
-from slime import Slime
-from monster import Monster
-from entity import Entity
-from collision import Collision, distance
+#Panda3d import
 from panda3d.core import *
-from terrain import Terrain
-from skybox import Skybox
-from direct.filter.CommonFilters import CommonFilters
 from panda3d.ai import *
-from gui.menu import Menu
-from spawn import Spawn
-import sys
-from panda3d.core import WindowProperties
 from panda3d.physics import *
-from cuboid import Cuboid
-import pconsole as pc
+from panda3d.core import WindowProperties
+from direct.filter.CommonFilters import CommonFilters
+from direct.actor.Actor import Actor
+from direct.showbase.ShowBase import ShowBase
+
+#Util import
+import os
+import sys
+import getpass
+from datetime import datetime as date
+
+#Class import
+from gui.menu import Menu
+from gui.hud import Hud
+from gui.gameover import Gameover
 from gui.classement import Classement
 from database import Database
-from gui.gameover import Gameover
-import os
-import getpass
-from gui.hud import Hud
-from datetime import datetime as date
+from cuboid import Cuboid
+from spawn import Spawn
+from terrain import Terrain
+from collision import Collision, distance
+from entity import Entity
+from skybox import Skybox
+from monster import Monster
+from slime import Slime
+
 
 class MyApp(ShowBase):
 
@@ -101,8 +106,8 @@ class MyApp(ShowBase):
         Skybox(self.render)
 
         #register events
-        self.ydelta = 100
-        self.zdelta = 20
+        self.ydelta = 300
+        self.zdelta = 60
         self.accept("wheel_up", self.camzoom,[True])
         self.accept("wheel_down", self.camzoom,[False])
 
@@ -136,6 +141,7 @@ class MyApp(ShowBase):
     def endGame(self):
         self.state = 'Finished'
         print("SCORE : "+str(Monster.score))
+        self.music.stop()
         self.loadGameOverMenu(Monster.score)
         today = date.today()
         name = getpass.getuser()

@@ -32,17 +32,13 @@ class Monster(Entity):
 
     def remove(self):
         if self.name[8:] == "candy":
-            self.music = base.loader.loadSfx("assets/sounds/candy.mp3")
-            self.music.play()
-            self.music.setVolume(0.1)
+            self.playSound("candy.mp3",0.1)
         elif self.name[8:] == "kamikaze":
-            self.music = base.loader.loadSfx("assets/sounds/hitDamage.mp3")
-            self.music.play()
-            self.music.setVolume(0.1)
+            self.playSound("hitDamage.mp3",0.1)
         else:
-            self.music = base.loader.loadSfx("assets/sounds/slime.mp3")
-            self.music.play()
-            self.music.setVolume(0.1)
+            self.playSound("slime.mp3",0.1)
+
+            pass
         self.aiWorld.removeAiChar(self.name)
         self.model.removeNode()
         Monster.score += self.scale

@@ -1,7 +1,7 @@
 from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
 from math import sqrt
-
+import platform
 def distance(A, B):
     return round(sqrt( (A[0]-B[0])**2 + (A[1]-B[1])**2 + (A[2]-B[2])**2 ))
 
@@ -60,3 +60,10 @@ class Entity():
     def __del__(self):
         print("Instance of Custom Class Alpha Removed")
     """
+
+    def playSound(self,name,volume):
+        if(platform.system() == 'Darwin'):
+            sound = base.loader.loadSfx("assets/sounds/"+name)
+            sound.play()
+            sound.setVolume(volume)
+        
