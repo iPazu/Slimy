@@ -35,7 +35,8 @@ To do so run a terminal and type those commands:
 - pip install mysql-connector
 
 Then you can open with python the main.py
-To do so just open a terminal in the game folder and do the command ![code]python3 main.py
+To do so just open a terminal in the game folder and do the command:
+- python3 main.py
 
 ## Screenshots
 ![the game running !](assets/slimy_screenshot.png)
