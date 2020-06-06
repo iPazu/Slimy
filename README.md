@@ -10,7 +10,7 @@ For that you need to eat  as much slime as you can, but to eat them you need to 
 On your way you will see some candy, that are represent with a sphere, those candy can grow you up but be carefull to don't eat too much candy :)
 Some kamikaze represented by yellow cones will make your life a lot harder by rushing you to kill you !
 
-# Controls
+### Controls
 
 	z: walk forward
 	s: walk backward
@@ -22,7 +22,7 @@ Some kamikaze represented by yellow cones will make your life a lot harder by ru
 	
 ## Installation
 
-# Window
+### Window
 
 You can download a .exe there: [download](https://github.com/iPazu/Slimy/releases/download/0.1/Slimy-0.1.zip)
 
@@ -37,7 +37,7 @@ To do so run a terminal and type those commands:
 Then you can open with python the main.py
 To do so just open a terminal in the game folder and do the command python3 main.py
 
-##Screenshots
+## Screenshots
 ![the game running !](assets/slimy_screenshot.png)
 ![The ranking gui !](assets/ranking_screenshot.png)
 
