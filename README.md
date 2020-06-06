@@ -22,11 +22,11 @@ Some kamikaze represented by yellow cones will make your life a lot harder by ru
 	
 ## Installation
 
-### Window
+### Windows
 
 You can download a .exe there: [download](https://github.com/iPazu/Slimy/releases/download/0.1/Slimy-0.1.zip)
 
-#Mac
+### Mac
 
 On mac you need to download the source code.
 Once the files are downloaded you need to install some libraries. 
