@@ -26,7 +26,7 @@ class Projectile():
         self.model.setPos(self.pos)
         self.damage = damage
         Projectile.projectile.append(self)
-        self.playSound("buble.mp3",0.1)
+        self.playSound("bubble.mp3",0.1)
 
     def destroy(self,):
         self.model.removeNode()

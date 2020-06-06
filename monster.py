@@ -19,7 +19,7 @@ class Monster(Entity):
         self.specificUpdate = specificUpdate
         #initconstant
         self.updatePos()
-        self.detectionDistance = detectionDistance
+        self.detectionDistance = detectionDistance+scale
         self.target = target
         self.mass = mass
         #AIstuff
