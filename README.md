@@ -1,17 +1,16 @@
 ![banner](assets/slimy_title.png)
-##Slimy
 ## V 0.10-alpha
 [![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)<br>
 A game created with python using panda3d.
 
-##How to play
+## How to play
 
 You control a slime and your goal is to finish the game with the biggest score.
 For that you need to eat  as much slime as you can, but to eat them you need to be bigger than them.
 On your way you will see some candy, that are represent with a sphere, those candy can grow you up but be carefull to don't eat too much candy :)
 Some kamikaze represented by yellow cones will make your life a lot harder by rushing you to kill you !
 
-#Controls
+# Controls
 
 	z: walk forward
 	s: walk backward
@@ -21,9 +20,9 @@ Some kamikaze represented by yellow cones will make your life a lot harder by ru
 	a: shot projectile, you can charge this shot by holding down the key to make bigger and stronger shots
 	e: dash
 	
-##Installation
+## Installation
 
-#Window
+# Window
 
 You can download a .exe there: [download](https://github.com/iPazu/Slimy/releases/download/0.1/Slimy-0.1.zip)
 
