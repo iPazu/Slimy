@@ -83,7 +83,7 @@ class Collision(DirectObject):
             if monster.name[8:] == "kamikaze" and monster.lifePoint <= projectile.damage:
                 monster.playSound("slime.mp3",0.5)
             monster.damage(projectile.damage)
-        projectile.model.setPos(1025, 1025, 0)
+        projectile.model.setPos(10000, 10000, 0)
         projectile.destroy()
 
     def collide1(self, collEntry):
