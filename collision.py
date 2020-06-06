@@ -102,7 +102,7 @@ class Collision(DirectObject):
             monster.damage(monster.lifePoint)
         else:
             slime.playSound("hitDamage.mp3",0.1)
-            slime.damage(10)
+            slime.damage(20)
         """
         Sequence(
             Func(collParent.setColor, (1, 0, 0, 1)),
