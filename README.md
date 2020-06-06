@@ -31,7 +31,7 @@ You can download a .exe there: [download](https://github.com/iPazu/Slimy/release
 On mac you need to download the source code.
 Once the files are downloaded you need to install some libraries. 
 To do so run a terminal and type those commands: 
-- run pip install panda3d==1.10.6
+- pip install panda3d==1.10.6
 - pip install mysql-connector
 
 Then you can open with python the main.py
