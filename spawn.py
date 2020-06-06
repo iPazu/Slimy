@@ -6,11 +6,13 @@ from monsters.candy import Candy
 from monsters.kamikaze import Kamikaze
 from collision import Collision
 import random
+import time
 import sys
 
 class Spawn(DirectObject):
 
     def __init__(self, entities, terrain, AIworld, collision):
+        self.t0 = int(round(time.time() * 1000))
         self.terrain = terrain
         self.AIworld = AIworld
         self.entities = entities
@@ -25,7 +27,12 @@ class Spawn(DirectObject):
             x, y = random.randint(-500, 500), random.randint(-500, 500)
             i = self.slime.scale
             rand = random.randint(0, 100)
-            if self.slime.scale < 200:
+            if int(round(time.time() * 1000))-self.t0 < 5:
+                if rand > 70:
+                    result = "evilSlime"
+                else:
+                    result = "candy"
+            elif self.slime.scale < 200:
                 if rand > 45:
                     result = "evilSlime"
                 elif rand < 30:
