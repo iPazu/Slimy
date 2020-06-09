@@ -1,5 +1,10 @@
+#Panda3d import
 from panda3d.core import *
-from math import *
+
+#Util import
+from math import sqrt
+
+
 class ProceduralImage():
     def __init__(self,size):
         self.sizex = size

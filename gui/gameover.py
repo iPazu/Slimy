@@ -1,3 +1,4 @@
+#Panda3d import
 from panda3d.core import TextNode
 from direct.gui.DirectGui import (
     DirectFrame,
@@ -5,11 +6,17 @@ from direct.gui.DirectGui import (
     DirectButton)
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
-import os
-import slime
 from direct.task.Timer import Timer
 from panda3d.core import Filename
+
+#Util import
+import os
+
+#Class import
+import slime
+
 MAINDIR = Filename.from_os_specific(os.getcwd())
+
 
 class Gameover:
     def __init__(self,score):

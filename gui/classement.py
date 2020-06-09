@@ -1,3 +1,4 @@
+#Panda3d import
 from panda3d.core import TextNode
 from direct.gui.DirectGui import (
     DirectFrame,
@@ -7,7 +8,12 @@ from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 import os
 from panda3d.core import Filename
+
+#Util import
+import os
+
 MAINDIR = Filename.from_os_specific(os.getcwd())
+
 
 class Classement:
     def __init__(self,ranking):

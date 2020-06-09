@@ -1,6 +1,12 @@
+#Panda3d import
 from panda3d.core import *
+
+#Util import
 import random
+
+#Class import
 from worldimage import ProceduralImage
+
 
 class Terrain():
     def __init__(self,size):

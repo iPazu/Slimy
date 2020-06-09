@@ -1,12 +1,18 @@
+#Panda3d import
 from panda3d.core import TextNode
 from direct.gui.DirectGui import (
     DirectFrame,
     DirectLabel,
     DirectButton)
 from direct.gui.OnscreenImage import OnscreenImage
-import os
 from panda3d.core import Filename
+
+#Util import
+import os
+
 MAINDIR = Filename.from_os_specific(os.getcwd())
+
+
 class Menu:
     def __init__(self):
         self.loadStartMenu()

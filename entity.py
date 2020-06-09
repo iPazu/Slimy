@@ -1,7 +1,12 @@
+#Panda3d import
 from panda3d.core import *
 from direct.showbase.ShowBase import ShowBase
+
+#Util import
 from math import sqrt
 import platform
+from playsound import playsound
+
 def distance(A, B):
     return round(sqrt( (A[0]-B[0])**2 + (A[1]-B[1])**2 + (A[2]-B[2])**2 ))
 
@@ -10,7 +15,7 @@ class Entity():
     def __init__(self, terrain, initialPos, ModelPath, floorPos, movingSpeed, scale, lifePoint, volumicMass, name):
 
         self.speed = LVecBase3f(0, 0, 0) # initialize as static object
-
+        
         self.spawn(ModelPath,initialPos)
         
         #init constants
@@ -62,8 +67,8 @@ class Entity():
     """
 
     def playSound(self,name,volume):
-        if(platform.system() == 'Darwin'):
-            sound = base.loader.loadSfx("assets/sounds/"+name)
-            sound.play()
-            sound.setVolume(volume)
+        self.sound = base.loader.loadSfx("assets/sounds/"+name)
+        self.sound.play()
+        self.sound.setVolume(volume)
+
         

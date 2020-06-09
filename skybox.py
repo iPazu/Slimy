@@ -1,5 +1,9 @@
-import os,sys
+#Panda3d import
 from panda3d.core import *
+
+#Util import
+import os,sys
+
 
 # these routines are trivial and won't be commented
 MAINDIR=Filename.from_os_specific(os.getcwd())

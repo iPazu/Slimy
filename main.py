@@ -7,13 +7,16 @@ from direct.filter.CommonFilters import CommonFilters
 from direct.actor.Actor import Actor
 from direct.showbase.ShowBase import ShowBase
 
+
 #Util import
 import os
 import sys
 import getpass
 from datetime import datetime as date
+import ctypes
 
-#Class import
+
+#Class imports
 from gui.menu import Menu
 from gui.hud import Hud
 from gui.gameover import Gameover
@@ -28,18 +31,26 @@ from skybox import Skybox
 from monster import Monster
 from slime import Slime
 
-
+user32 = ctypes.windll.user32
+user32.SetProcessDPIAware() #windows fullscreen compatibility, fixes the getsystemmetrics bug
+fullscreen=True
+if fullscreen:
+    loadPrcFileData('', 'fullscreen true') 
+    loadPrcFileData('','win-size '+str(user32.GetSystemMetrics(0))+' '+str(user32.GetSystemMetrics(1))) # fullscreen stuff for one monitor, for multi monitor setup try 78 79
 class MyApp(ShowBase):
 
     def __init__(self):
         self.debug = False
         ShowBase.__init__(self)
+        self.accept("escape",sys.exit)
 
         # the dt should depend on the framerate
         self.dt = 0.25
 
         self.database = Database()
         self.ranking = self.database.getRankingFromDatabase()
+
+        self.musicManager.setConcurrentSoundLimit(2)
 
         #initiate game state
         self.state = 'Menu'
@@ -120,7 +131,7 @@ class MyApp(ShowBase):
     def startGame(self):
         print("Starting game")
         #Load music
-        self.music = base.loader.loadSfx("assets/sounds/hytale-ost-kweebec-village.mp3")
+        self.music = base.loader.loadMusic("assets/sounds/hytale-ost-kweebec-village.mp3")
         self.music.play()
         self.music.setVolume(0.1)
 
@@ -152,7 +163,6 @@ class MyApp(ShowBase):
 
     def loadEntities(self):
         startingPoint = (100, 0, 10)
-        #AI
         self.AIworld = AIWorld(render)
         self.collision = Collision(Monster.monster)
         #terrain, initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass, movingSpeed, dt
@@ -184,6 +194,7 @@ class MyApp(ShowBase):
         for e in [self.slime]+Monster.monster:
             e.update()
         self.hud.setLifeBarValue(self.slime.lifePoint)
+        self.hud.setScore(Monster.score)
         return task.cont
 
     def camzoom(self,decrease):
@@ -213,7 +224,7 @@ class MyApp(ShowBase):
         props = WindowProperties()
         props.setCursorHidden(False)        
         self.win.requestProperties(props)
-
+    
     def setFullscreen(self):
             base.win.clearRejectedProperties()
             props = WindowProperties()
