@@ -17,8 +17,9 @@ Some kamikaze represented by yellow cones will make your life a lot harder by ru
 	d: strafe right
 	q: strafe left
 	space: jump
-	a: shot projectile, you can charge this shot by holding down the key to make bigger and stronger shots
+	mouse_click_left: shot projectile, you can charge this shot by holding down the click to make bigger and stronger shots
 	e: dash
+	escape: exit
 	
 ## Installation
 
