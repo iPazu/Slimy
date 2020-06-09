@@ -9,7 +9,7 @@ class Kamikaze(Monster):
 
     def __init__(self, terrain, initialPos, target, aiWorld, size, name):
         #terrain, initialPos, modelPath, movingSpeed, scale, lifePoint, volumicMass, target, aiWorld, detectionDistance, name, specificUpdate
-        Monster.__init__(self, terrain, initialPos, "assets/models/kamikaze2.egg", 175, size, 1, 100, target, aiWorld, 1000, name, self.Hpr)
+        Monster.__init__(self, terrain, initialPos, "assets/models/kamikaze.egg", 175, size, 1, 100, target, aiWorld, 1000, name, self.Hpr)
         self.AIbehaviors.pursue(self.target.model)
         self.dx = 0
         self.dy = 0

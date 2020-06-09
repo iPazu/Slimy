@@ -15,7 +15,7 @@ class Projectile():
     def __init__(self, angle, initialPos, scale, damage):
         # Load model
         if random.randint(0, 100) != 0:
-            self.model = loader.loadModel("assets/models/projectile2.egg")
+            self.model = loader.loadModel("assets/models/projectile.egg")
         else:
             self.model = loader.loadModel("assets/models/alien.egg")
         self.model.reparentTo(render)

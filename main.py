@@ -166,7 +166,7 @@ class MyApp(ShowBase):
         self.AIworld = AIWorld(render)
         self.collision = Collision(Monster.monster)
         #terrain, initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass, movingSpeed, dt
-        self.slime = Slime(self.terrain, startingPoint, "assets/models/new_slime.egg", 10, 10, 100, 0.01, 10, self.dt, "slime", self.collision) 
+        self.slime = Slime(self.terrain, startingPoint, "assets/models/slime.egg", 10, 10, 100, 0.01, 10, self.dt, "slime", self.collision) 
         self.spawn = Spawn([self.slime]+Monster.monster, self.terrain, self.AIworld, self.collision)
         self.spawn.spawn()
 
@@ -225,19 +225,6 @@ class MyApp(ShowBase):
         props.setCursorHidden(False)        
         self.win.requestProperties(props)
     
-    def setFullscreen(self):
-            base.win.clearRejectedProperties()
-            props = WindowProperties()
-            props.setFullscreen(True)
-            props.setSize(self.dispWidth, self.dispHeight)
-            base.win.requestProperties(props)
-            winSize = ConfigVariableString("win-size")
-            winSize.setValue("{} {}".format(self.dispWidth, self.dispHeight))
-            fullscreen = ConfigVariableBool("fullscreen")
-            fullscreen.setValue(True)
-            self.taskMgr.step()
-            aspectRatio = self.dispWidth / self.dispHeight
-            self.adjustWindowAspectRatio(aspectRatio)
 
 App = MyApp()
 App.run()
