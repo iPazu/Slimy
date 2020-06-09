@@ -42,7 +42,7 @@ class Spawn(DirectObject):
                     result = "evilSlime"
                 else:
                     result = "candy"
-            elif self.slime.scale < 75:
+            elif self.slime.scale < 100:
                 if rand > 45:
                     result = "evilSlime"
                 elif rand < 30:
