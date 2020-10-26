@@ -33,7 +33,7 @@ from slime import Slime
 
 user32 = ctypes.windll.user32
 user32.SetProcessDPIAware() #windows fullscreen compatibility, fixes the getsystemmetrics bug
-fullscreen=True
+fullscreen=False
 if fullscreen:
     loadPrcFileData('', 'fullscreen true') 
     loadPrcFileData('','win-size '+str(user32.GetSystemMetrics(0))+' '+str(user32.GetSystemMetrics(1))) # fullscreen stuff for one monitor, for multi monitor setup try 78 79
@@ -46,18 +46,21 @@ class MyApp(ShowBase):
 
         # the dt should depend on the framerate
         self.dt = 0.25
-
-        self.database = Database()
-        self.ranking = self.database.getRankingFromDatabase()
-
+        """try:
+            self.database = Database()
+            self.ranking = self.database.getRankingFromDatabase()
+        except:
+            pass"""
         self.musicManager.setConcurrentSoundLimit(2)
 
         #initiate game state
         self.state = 'Menu'
         self.terrain = Terrain(1024)
-        self.classement = Classement(self.ranking)
-        self.classement.hideMenu()
-
+        """try:
+            self.classement = Classement(self.ranking) 
+            self.classement.hideMenu()
+        except:
+            pass"""
         self.menu = Menu()
         self.loadStartMenu()
 
@@ -156,7 +159,10 @@ class MyApp(ShowBase):
         self.loadGameOverMenu(Monster.score)
         today = date.today()
         name = getpass.getuser()
-        self.database.insertValues(name.capitalize(),Monster.score,today.strftime("%d/%m/%Y"))
+        """try:
+            self.database.insertValues(name.capitalize(),Monster.score,today.strftime("%d/%m/%Y"))
+        except:
+            pass"""
 
     def restartGame(self,task):
         os.execl(sys.executable, sys.executable, *sys.argv)
@@ -166,7 +172,7 @@ class MyApp(ShowBase):
         self.AIworld = AIWorld(render)
         self.collision = Collision(Monster.monster)
         #terrain, initialPos, slimeModelPath, floorPos, scale, lifePoint, volumicMass, movingSpeed, dt
-        self.slime = Slime(self.terrain, startingPoint, "assets/models/slime.egg", 10, 10, 100, 0.01, 10, self.dt, "slime", self.collision) 
+        self.slime = Slime(self.terrain, startingPoint, "assets/models/slime.egg", 10, 10, 100, 0.01, 5, self.dt, "slime", self.collision) 
         self.spawn = Spawn([self.slime]+Monster.monster, self.terrain, self.AIworld, self.collision)
         self.spawn.spawn()
 
